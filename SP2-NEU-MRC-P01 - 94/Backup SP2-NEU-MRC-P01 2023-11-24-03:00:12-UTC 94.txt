@@ -1,0 +1,93 @@
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname SP2-NEU-MRC-P01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$POrp$Urpx5rPy8rqVzWAaMvrLU0
+!
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 09581A3E160B111D263E283E65167A7932251E0412164F586D6C
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+aaa session-id common
+!
+!
+ip cef
+!
+!
+ip domain name neutralityms.com
+ip name-server 10.128.148.251
+!
+!
+!
+username admin password 7 0023420700520A125F335F
+username unimus password 7 1439411E18360B7A653C2A
+!
+!
+ip ssh version 2
+!
+!
+interface FastEthernet0/0
+ description SP2-NEU-MGMT *** SP2-NEU-MRC-P01 Fa0/0 to SP2-NEU-OOB-P01 Et1/45 ***
+ ip address 10.128.148.228 255.255.255.248
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ shutdown
+ clock rate 125000
+!
+interface Serial0/0/1
+ no ip address
+ shutdown
+ clock rate 125000
+!
+interface Group-Async0
+ no ip address
+ encapsulation slip
+ group-range 1/0 1/15
+!
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 10.128.148.225
+!
+no ip http server
+no ip http secure-server
+!
+!
+control-plane
+!
+!
+line con 0
+line aux 0
+line 1/0 1/15
+ transport input telnet
+ speed 115200
+line vty 0 4
+ privilege level 15
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ privilege level 15
+ transport input ssh
+!
+scheduler allocate 20000 1000
+!
+end

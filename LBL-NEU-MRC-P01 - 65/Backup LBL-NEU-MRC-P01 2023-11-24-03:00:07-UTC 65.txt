@@ -1,0 +1,106 @@
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname LBL-NEU-MRC-P01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$y5p8$NZbCEiNcY7DJM3S2SQUWW0
+!
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 111D4D32181C0D03291807306601676814001B00054317566760
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+aaa session-id common
+!
+!
+ip cef
+!
+!
+ip domain name neutralityms.com
+ip name-server 10.128.148.251
+!
+voice-card 0
+ no dspfarm
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+username admin password 7 0023420700520A125F335F
+username unimus password 7 09621D1C0D3736434A181D
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ description LBL-NEU-MGMT *** LBL-NEU-MRC-P01 Fa0/0 to LBL-OOB-WNSW-P01 Fa1/0/3 ***
+ ip address 10.128.148.100 255.255.255.248
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Group-Async0
+ no ip address
+ encapsulation slip
+ group-range 1/0 1/31
+!
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 10.128.148.97
+!
+!
+ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+line aux 0
+line 1/0 1/31
+ transport input telnet
+line vty 0 4
+ privilege level 15
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ privilege level 15
+ transport input ssh
+!
+scheduler allocate 20000 1000
+!
+end

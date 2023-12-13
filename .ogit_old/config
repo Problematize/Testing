@@ -1,0 +1,12 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[user]
+	email = tpage29@yahoo.co.uk
+	name = eralord
+[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	pushurl = ssh://problematize@10.128.148.5/eralord/neutrality
+	url = ssh://problematize@10.128.148.5/eralord/neutrality

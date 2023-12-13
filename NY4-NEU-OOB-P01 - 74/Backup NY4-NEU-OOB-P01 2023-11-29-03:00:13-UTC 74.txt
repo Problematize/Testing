@@ -1,0 +1,283 @@
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname NY4-NEU-OOB-P01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$BwNk$hDh2f/X3pCL0Im9TIY.MT1
+!
+username admin privilege 15 password 7 0221555A0F0F0E351C5C1A
+username unimus password 7 080F1F5B1D2B2446531F15
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 0212506C0408092E617C250D4B2540410B032728203D7D3B1627
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+!
+!
+aaa session-id common
+switch 2 provision ws-c3750v2-48ps
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+ip routing
+ip domain-name neutralityms.com
+ip name-server 10.128.148.251
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-1083590400
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1083590400
+ revocation-check none
+ rsakeypair TP-self-signed-1083590400
+!
+!
+crypto pki certificate chain TP-self-signed-1083590400
+ certificate self-signed 01
+  30820259 308201C2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 31303833 35393034 3030301E 170D3933 30333031 30303031
+  33315A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D31 30383335
+  39303430 3030819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  8100D473 3EA6EE52 6CF68083 9C8A49F7 188F38CC 43E06FEB 5CE0CCF8 9F1BD192
+  1CC7006E C20D44A7 20796E44 4FA837BC E6DEC666 3E05B140 2DF65657 E8E4D06A
+  8C857901 9E83A0D2 713ECA4D 40F126DF 6FAE1850 22DE51D7 EDD4E7F1 54A612E5
+  A48F2FFE ABA4826E BFD2F2CC AA1A6FC0 58477295 E516D041 5A9FE9DB B00E2E5A
+  0FBD0203 010001A3 8180307E 300F0603 551D1301 01FF0405 30030101 FF302B06
+  03551D11 04243022 82204E59 342D4E45 552D4F4F 422D5030 312E6E65 75747261
+  6C697479 6D732E63 6F6D301F 0603551D 23041830 16801470 723119B9 FE6090A3
+  45E48E6F D47AFD37 C45B1130 1D060355 1D0E0416 04147072 3119B9FE 6090A345
+  E48E6FD4 7AFD37C4 5B11300D 06092A86 4886F70D 01010405 00038181 003FF4D3
+  4F4F3E74 BA93CF7C A8FBE95C EC1F3569 9AC903F1 A37242D3 CE03BEDC FBC5BFDE
+  541D8A41 4076669C 9CE88030 1E7DAD26 82F7B7C9 FA317F31 FC3CA7DB 1B4853F7
+  237368C2 2050121C 66C32C0D DF828A1C 6BC63B7D E26196C6 C580E17A C8E280BC
+  3996039C E92D2C09 35B99FB2 F31351B8 DAFBA9F7 02AFD686 C52E36EB 62
+  quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree etherchannel guard misconfig
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 40
+ name NY4_ADVA_OOB
+!
+vlan 4010
+ name NY4_OOB
+!
+!
+!
+!
+interface FastEthernet2/0/1
+ description NY4-NEU-MGMT *** Fa1/0/1 - MGMT Access to NY4-NEU-WNSW-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet2/0/2
+ description NY4-NEU-MGMT *** Fa1/0/2 - MGMT Access to NY4-NEU-WNSW-P02 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet2/0/3
+ description NY4-NEU-MGMT *** Fa1/0/3 - MGMT Access to NY4-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet2/0/4
+ description NY4-NEU-MGMT *** Fa1/0/4 - iLo Access to NY4-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet2/0/5
+ description NY4-NEU-MGMT *** Fa1/0/5 - MGMT Access to NY4-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet2/0/6
+ description NY4-NEU-MGMT *** Fa2/0/6 - MGMT Access to NY4-NEU-ADVA-P01 - 1Gb ***
+ switchport access vlan 40
+ switchport mode access
+!
+interface FastEthernet2/0/7
+ description NY4-NEU-MGMT *** Fa2/0/7 - MGMT Access to NY4-NEU-ADVA-P02 - 1Gb ***
+ switchport access vlan 40
+ switchport mode access
+!
+interface FastEthernet2/0/8
+ description NY4-NEU-MGMT *** Fa2/0/8 - MGMT Access to NY4-NEU-ITFW-P01 - 100mb ***
+ switchport access vlan 40
+ switchport mode access
+!
+interface FastEthernet2/0/9
+ description NY4-NEU-MGMT *** Fa2/0/9 - OOB Interlink to NY4-NEU-ITFW-P01 port 12 - 1G ***
+ no switchport
+ ip address 10.246.0.5 255.255.255.252
+!
+interface FastEthernet2/0/10
+!
+interface FastEthernet2/0/11
+!
+interface FastEthernet2/0/12
+!
+interface FastEthernet2/0/13
+!
+interface FastEthernet2/0/14
+!
+interface FastEthernet2/0/15
+!
+interface FastEthernet2/0/16
+!
+interface FastEthernet2/0/17
+!
+interface FastEthernet2/0/18
+!
+interface FastEthernet2/0/19
+!
+interface FastEthernet2/0/20
+!
+interface FastEthernet2/0/21
+!
+interface FastEthernet2/0/22
+!
+interface FastEthernet2/0/23
+!
+interface FastEthernet2/0/24
+!
+interface FastEthernet2/0/25
+!
+interface FastEthernet2/0/26
+!
+interface FastEthernet2/0/27
+!
+interface FastEthernet2/0/28
+!
+interface FastEthernet2/0/29
+!
+interface FastEthernet2/0/30
+!
+interface FastEthernet2/0/31
+!
+interface FastEthernet2/0/32
+!
+interface FastEthernet2/0/33
+!
+interface FastEthernet2/0/34
+!
+interface FastEthernet2/0/35
+!
+interface FastEthernet2/0/36
+!
+interface FastEthernet2/0/37
+!
+interface FastEthernet2/0/38
+!
+interface FastEthernet2/0/39
+!
+interface FastEthernet2/0/40
+!
+interface FastEthernet2/0/41
+!
+interface FastEthernet2/0/42
+!
+interface FastEthernet2/0/43
+!
+interface FastEthernet2/0/44
+!
+interface FastEthernet2/0/45
+!
+interface FastEthernet2/0/46
+!
+interface FastEthernet2/0/47
+!
+interface FastEthernet2/0/48
+!
+interface GigabitEthernet2/0/1
+ description NY4-NEU-MGMT *** NY4-OOB-WNSW-P01 Gi1/0/1 to NEU BB via Cogent VPLS - 1G ***
+ no switchport
+ ip address 10.245.0.74 255.255.255.192
+ speed nonegotiate
+!
+interface GigabitEthernet2/0/2
+!
+interface GigabitEthernet2/0/3
+!
+interface GigabitEthernet2/0/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan40
+ description NY4_ADVA_OOB
+ ip address 10.128.148.193 255.255.255.248
+!
+interface Vlan4010
+ description NY4_OOB
+ ip address 10.128.148.137 255.255.255.248
+!
+router bgp 64529
+ no synchronization
+ bgp router-id 10.245.0.74
+ bgp log-neighbor-changes
+ network 10.128.148.136 mask 255.255.255.248
+ network 10.128.148.192 mask 255.255.255.248
+ neighbor 10.245.0.65 remote-as 64520
+ neighbor 10.245.0.65 transport path-mtu-discovery
+ neighbor 10.245.0.65 description eBGP to LD4-NEU-OOB-P01
+ neighbor 10.245.0.65 timers 6 20
+ neighbor 10.245.0.65 soft-reconfiguration inbound
+ no auto-summary
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.245.0.65
+ip route 10.112.134.192 255.255.255.192 10.128.148.197
+ip http server
+ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+end
+
+show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa2/0/10, Fa2/0/11, Fa2/0/12, Fa2/0/13, Fa2/0/14, Fa2/0/15, Fa2/0/16, Fa2/0/17, Fa2/0/18, Fa2/0/19, Fa2/0/20, Fa2/0/21, Fa2/0/22, Fa2/0/23, Fa2/0/24
+                                                Fa2/0/25, Fa2/0/26, Fa2/0/27, Fa2/0/28, Fa2/0/29, Fa2/0/30, Fa2/0/31, Fa2/0/32, Fa2/0/33, Fa2/0/34, Fa2/0/35, Fa2/0/36, Fa2/0/37, Fa2/0/38, Fa2/0/39
+                                                Fa2/0/40, Fa2/0/41, Fa2/0/42, Fa2/0/43, Fa2/0/44, Fa2/0/45, Fa2/0/46, Fa2/0/47, Fa2/0/48, Gi2/0/2, Gi2/0/3, Gi2/0/4
+40   NY4_ADVA_OOB                     active    Fa2/0/6, Fa2/0/7, Fa2/0/8
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+4010 NY4_OOB                          active    Fa2/0/1, Fa2/0/2, Fa2/0/3, Fa2/0/4, Fa2/0/5

@@ -1,0 +1,262 @@
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname LBL-NEU-OOB-P01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$wFcH$Gg18UQSI1NJ/oh5vvIJLU0
+!
+username admin privilege 15 password 7 112E4804131B0A18543838
+username unimus password 7 11274A1003202A5D453E32
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 111D4D32181C0D03291807306601676814001B00054317566760
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+!
+!
+aaa session-id common
+switch 1 provision ws-c3750v2-48ps
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+ip routing
+ip domain-name neutralityms.com
+ip name-server 10.128.148.251
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-607278976
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-607278976
+ revocation-check none
+ rsakeypair TP-self-signed-607278976
+!
+!
+crypto pki certificate chain TP-self-signed-607278976
+ certificate self-signed 01
+  30820257 308201C0 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  30312E30 2C060355 04031325 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 36303732 37383937 36301E17 0D393330 33303130 30303133
+  355A170D 32303031 30313030 30303030 5A303031 2E302C06 03550403 1325494F
+  532D5365 6C662D53 69676E65 642D4365 72746966 69636174 652D3630 37323738
+  39373630 819F300D 06092A86 4886F70D 01010105 0003818D 00308189 02818100
+  B58F90C3 698CE67D 016C9295 3C2A5E15 01BD85F7 CB929D35 61FBD747 ED3F037E
+  AF70D95E 43B80ED9 A0C44750 B532B425 F762EC16 2CBE19AC 59537DFB C8D44A24
+  C45F3CAB 751DB435 7C6B6BF3 8E8B1435 8B2DDD31 28B107E9 88104FE0 FC1636B6
+  C3E0CFD5 3BAFDAE8 22740635 8D19A6B5 E3A70B0B E1FBB014 ABDF1E9D 02707C21
+  02030100 01A38180 307E300F 0603551D 130101FF 04053003 0101FF30 2B060355
+  1D110424 30228220 4C424C2D 4E45552D 4F4F422D 5030312E 6E657574 72616C69
+  74796D73 2E636F6D 301F0603 551D2304 18301680 148E95DA E27676AB 80B75594
+  2B458D29 DEE14363 42301D06 03551D0E 04160414 8E95DAE2 7676AB80 B755942B
+  458D29DE E1436342 300D0609 2A864886 F70D0101 04050003 8181005F CD735E91
+  D8BEEAC6 A46D5A2D C8798821 79E212AF 2328110C 9205C05E EC5406E4 90E1C1B5
+  486A30CF B78D5800 402787BE 965DCC96 A9E7C2E8 6AD2D219 2E58B0AB AA55E170
+  05613769 AC796039 FD60D491 C87C8D87 AC08EE86 962563D0 CD1A29D6 DEF8277C
+  8FB4CF61 6641DEBA CB96D098 1CDBAFFC 1D1A4C2E A9628F09 2AFC8F
+  quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree etherchannel guard misconfig
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 4010
+ name LBL_OOB
+!
+!
+!
+!
+interface FastEthernet1/0/1
+ description LBL-NEU-MGMT *** Fa1/0/1 - MGMT Access to LBL-NEU-WNSW-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/2
+ description LBL-NEU-MGMT *** Fa1/0/2 - MGMT Access to LBL-NEU-WNSW-P02 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/3
+ description LBL-NEU-MGMT *** Fa1/0/3 - MGMT Access to LBL-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/4
+ description LBL-NEU-MGMT *** Fa1/0/4 - iLo Access to LBL-NEU-SRV-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/5
+ description LBL-NEU-MGMT *** Fa1/0/5 - MGMT Access to LBL-NEU-SRV-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/6
+!
+interface FastEthernet1/0/7
+!
+interface FastEthernet1/0/8
+!
+interface FastEthernet1/0/9
+!
+interface FastEthernet1/0/10
+!
+interface FastEthernet1/0/11
+!
+interface FastEthernet1/0/12
+!
+interface FastEthernet1/0/13
+!
+interface FastEthernet1/0/14
+!
+interface FastEthernet1/0/15
+!
+interface FastEthernet1/0/16
+!
+interface FastEthernet1/0/17
+!
+interface FastEthernet1/0/18
+!
+interface FastEthernet1/0/19
+!
+interface FastEthernet1/0/20
+!
+interface FastEthernet1/0/21
+!
+interface FastEthernet1/0/22
+!
+interface FastEthernet1/0/23
+!
+interface FastEthernet1/0/24
+!
+interface FastEthernet1/0/25
+!
+interface FastEthernet1/0/26
+!
+interface FastEthernet1/0/27
+!
+interface FastEthernet1/0/28
+!
+interface FastEthernet1/0/29
+!
+interface FastEthernet1/0/30
+!
+interface FastEthernet1/0/31
+!
+interface FastEthernet1/0/32
+!
+interface FastEthernet1/0/33
+!
+interface FastEthernet1/0/34
+!
+interface FastEthernet1/0/35
+!
+interface FastEthernet1/0/36
+!
+interface FastEthernet1/0/37
+!
+interface FastEthernet1/0/38
+!
+interface FastEthernet1/0/39
+!
+interface FastEthernet1/0/40
+!
+interface FastEthernet1/0/41
+!
+interface FastEthernet1/0/42
+!
+interface FastEthernet1/0/43
+!
+interface FastEthernet1/0/44
+!
+interface FastEthernet1/0/45
+!
+interface FastEthernet1/0/46
+!
+interface FastEthernet1/0/47
+!
+interface FastEthernet1/0/48
+!
+interface GigabitEthernet1/0/1
+ description LBL-NEU-MGMT *** LBL-OOB-WNSW-P01 Gi1/0/1 to NEU BB via Cogent VPLS - 1G ***
+ no switchport
+ ip address 10.245.0.69 255.255.255.192
+ speed nonegotiate
+!
+interface GigabitEthernet1/0/2
+!
+interface GigabitEthernet1/0/3
+!
+interface GigabitEthernet1/0/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan4010
+ description LBL_OOB
+ ip address 10.128.148.97 255.255.255.248
+!
+router bgp 64524
+ no synchronization
+ bgp router-id 10.245.0.69
+ bgp log-neighbor-changes
+ network 10.128.148.96 mask 255.255.255.248
+ neighbor 10.245.0.65 remote-as 64520
+ neighbor 10.245.0.65 transport path-mtu-discovery
+ neighbor 10.245.0.65 description eBGP to LD4-NEU-OOB-P01
+ neighbor 10.245.0.65 timers 6 20
+ neighbor 10.245.0.65 soft-reconfiguration inbound
+ no auto-summary
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.245.0.65
+ip http server
+ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+end
+
+show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa1/0/6, Fa1/0/7, Fa1/0/8, Fa1/0/9, Fa1/0/10, Fa1/0/11, Fa1/0/12, Fa1/0/13, Fa1/0/14, Fa1/0/15, Fa1/0/16, Fa1/0/17, Fa1/0/18, Fa1/0/19, Fa1/0/20
+                                                Fa1/0/21, Fa1/0/22, Fa1/0/23, Fa1/0/24, Fa1/0/25, Fa1/0/26, Fa1/0/27, Fa1/0/28, Fa1/0/29, Fa1/0/30, Fa1/0/31, Fa1/0/32, Fa1/0/33, Fa1/0/34, Fa1/0/35
+                                                Fa1/0/36, Fa1/0/37, Fa1/0/38, Fa1/0/39, Fa1/0/40, Fa1/0/41, Fa1/0/42, Fa1/0/43, Fa1/0/44, Fa1/0/45, Fa1/0/46, Fa1/0/47, Fa1/0/48, Gi1/0/2, Gi1/0/3
+                                                Gi1/0/4
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+4010 LBL_OOB                          active    Fa1/0/1, Fa1/0/2, Fa1/0/3, Fa1/0/4, Fa1/0/5

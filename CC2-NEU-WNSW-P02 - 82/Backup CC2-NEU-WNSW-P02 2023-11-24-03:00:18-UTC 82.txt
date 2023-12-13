@@ -1,0 +1,360 @@
+!Command: show running-config
+!Running configuration last done at: Thu Nov 23 14:15:31 2023
+!Time: Fri Nov 24 03:56:17 2023
+
+version 9.3(2) Bios:version 07.66
+hostname CC2-NEU-WNSW-P02
+vdc CC2-NEU-WNSW-P02 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 256
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature vrrp
+nv overlay evpn
+feature ospf
+feature bgp
+feature pim
+feature interface-vlan
+feature vn-segment-vlan-based
+feature lldp
+feature bfd
+clock protocol none vdc 1
+feature nv overlay
+
+no password strength-check
+username admin password 5 $5$1jnHo0qO$V71TdSj4.V3Lo5f8VYC52FvDwZqHstkeaaltflv9IdD  role network-admin
+ip domain-lookup
+ip name-server 10.128.148.251
+ip name-server 10.128.148.251 use-vrf management
+radius-server host 10.128.148.251 key 7 "w4AtffjRJOd.H2*wedoip.sPM" authentication accounting
+aaa group server radius DALIO
+    server 10.128.148.251
+    use-vrf management
+    source-interface mgmt0
+system jumbomtu 9000
+ip access-list acl-snmp-rw-in
+  statistics per-entry
+  10 remark Allow Observium
+  20 permit ip 10.128.148.5/32 any
+  30 permit ip 10.128.149.12/32 any
+copp profile strict
+bfd multihop interval 250 min_rx 250 multiplier 1
+snmp-server source-interface traps loopback1
+snmp-server user admin network-admin auth md5 0x8190ebb43908d1706febd179753a5288 priv 0x8190ebb43908d1706febd179753a5288 localizedkey
+snmp-server host 10.128.148.5 traps version 2c N3utRA1!ty
+snmp-server host 10.128.149.12 traps version 2c N3utRA1!ty
+rmon event 1 description FATAL(1) owner PMON@FATAL
+rmon event 2 description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 description ERROR(3) owner PMON@ERROR
+rmon event 4 description WARNING(4) owner PMON@WARNING
+rmon event 5 description INFORMATION(5) owner PMON@INFO
+snmp-server community N3utRA1!ty group network-admin
+snmp-server community N3utRA1!ty use-ipv4acl acl-snmp-rw-in
+aaa authentication login default group DALIO local
+aaa authentication login console group DALIO local
+
+ip pim rp-address 9.9.9.254 group-list 224.0.0.0/4
+ip pim ssm range 232.0.0.0/8
+vlan 1,10,115,2010
+vlan 10
+  name NEU_SRV_MGMT
+vlan 115
+  name Options_CC2_to_CME
+  vn-segment 30115
+  xconnect
+vlan 2010
+  name CC2-NEU-WNSW-P02
+
+no spanning-tree vlan 115-116
+ip prefix-list pl-all-routes seq 1 permit 0.0.0.0/0 eq 32
+ip prefix-list pl-ch1-cc2-preferred seq 1 permit 172.16.138.206/32
+ip prefix-list pl-ch1-cc2-preferred seq 2 permit 1.1.1.206/32
+ip prefix-list pl-loopback-only seq 10 permit 0.0.0.0/0 eq 32
+route-map rm-ch1-cc2-preferred permit 10
+  match ip address prefix-list pl-ch1-cc2-preferred
+  set local-preference 500
+route-map rm-ch1-cc2-preferred permit 20
+  match ip address prefix-list pl-all-routes
+route-map rm-loopback-routes permit 10
+  match ip address prefix-list pl-loopback-only
+route-map rm-nexthop-unchanged permit 10
+  set ip next-hop unchanged
+vrf context management
+  ip route 0.0.0.0/0 10.128.148.177
+hardware access-list tcam region vacl 0
+hardware access-list tcam region racl 0
+hardware access-list tcam region span 0
+hardware access-list tcam region arp-ether 256 double-wide
+hardware access-list tcam region vxlan-p2p 256
+
+
+interface Vlan1
+
+interface Vlan10
+  description NEU_SRV_UA
+  no shutdown
+  ip address 10.128.149.99/29
+  vrrp 1
+    authentication text VL_10
+    address 10.128.149.97
+    no shutdown
+
+interface Vlan2010
+  description CC2-NEU-XC *** Et1/47-48 - CC2-NEU-WNSW-P02 Et1/47-48 - 10Gb ***
+  no shutdown
+  mtu 9000
+  ip address 172.16.139.42/30
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface port-channel1
+  description NEU-ETHC *** Po1 - CC2-NEU-WNSW-P01 Po1 ***
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  speed 10000
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback100
+  member vni 30115
+    mcast-group 239.1.1.6
+
+interface Ethernet1/1
+
+interface Ethernet1/2
+
+interface Ethernet1/3
+
+interface Ethernet1/4
+
+interface Ethernet1/5
+
+interface Ethernet1/6
+  description NEU-XC *** Et1/6 - CC2-NEU-SRV-01 10G2 - 10Gb ***
+  switchport access vlan 10
+
+interface Ethernet1/7
+
+interface Ethernet1/8
+
+interface Ethernet1/9
+
+interface Ethernet1/10
+  description CC2-CLI-XC *** Et1/10 - NSID001409 - OptionsIT *** - 10G
+  no lldp transmit
+  no lldp receive
+  no switchport
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/11
+
+interface Ethernet1/12
+
+interface Ethernet1/13
+
+interface Ethernet1/14
+
+interface Ethernet1/15
+
+interface Ethernet1/16
+  description NY4 to CC2 Test
+  no switchport
+  ip address 20.20.20.2/30
+  no shutdown
+
+interface Ethernet1/17
+
+interface Ethernet1/18
+
+interface Ethernet1/19
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+
+interface Ethernet1/22
+
+interface Ethernet1/23
+
+interface Ethernet1/24
+
+interface Ethernet1/25
+
+interface Ethernet1/26
+
+interface Ethernet1/27
+
+interface Ethernet1/28
+
+
+interface Ethernet1/29
+
+interface Ethernet1/30
+
+interface Ethernet1/31
+
+interface Ethernet1/32
+
+interface Ethernet1/33
+
+interface Ethernet1/34
+
+interface Ethernet1/35
+
+interface Ethernet1/36
+
+interface Ethernet1/37
+
+interface Ethernet1/38
+
+interface Ethernet1/39
+
+interface Ethernet1/40
+
+interface Ethernet1/41
+
+interface Ethernet1/42
+
+interface Ethernet1/43
+
+interface Ethernet1/44
+
+interface Ethernet1/45
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+  description CC2-NEU-XC *** Et1/47-48 - CC2-NEU-WNSW-P02 Et1/47-48 - 10Gb ***
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  speed 10000
+  channel-group 1
+
+interface Ethernet1/48
+  description CC2-NEU-XC *** Et1/47-48 - CC2-NEU-WNSW-P02 Et1/47-48 - 10Gb ***
+  shutdown
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  speed 10000
+  channel-group 1
+
+interface Ethernet1/49
+
+interface Ethernet1/50
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+
+interface Ethernet1/53
+
+interface Ethernet1/54
+
+interface mgmt0
+  vrf member management
+  ip address 10.128.148.179/29
+
+interface loopback1
+  description NEU-MGMT *** CC2 Lo1 Management ***
+  ip address 172.16.138.211/32
+  ip ospf network point-to-point
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface loopback100
+  description VTEP-IP
+  ip address 1.1.1.211/32
+  ip pim sparse-mode
+line console
+line vty
+  access-class acl-vty-in in
+boot nxos bootflash:/nxos.9.3.2.bin
+router ospf 10
+  router-id 172.16.138.211
+  log-adjacency-changes
+  max-lsa 12000
+  passive-interface default
+router bgp 64611
+  router-id 172.16.138.211
+  log-neighbor-changes
+  address-family ipv4 unicast
+    redistribute direct route-map rm-loopback-routes
+  address-family l2vpn evpn
+  neighbor 172.16.138.206
+    bfd
+    remote-as 65532
+    description EVPN to CH1-NEU-WNSW-P01
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.138.208
+    bfd
+    remote-as 64612
+    description EVPN to AUR-NEU-WNSW-P01
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.139.41
+    remote-as 64610
+    description eBGP to CC2-NEU-WNSW-P01
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+evpn
+  vni 30115 l2
+    rd 30115:64611
+    route-target import 30115:115
+    route-target export 30115:115
+
+logging server 10.128.148.5 6
+logging server 10.128.149.12 6
+logging source-interface loopback1
+
+
+
+show vlan brief
+
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Eth1/1, Eth1/2, Eth1/3, Eth1/4
+                                                Eth1/5, Eth1/7, Eth1/8, Eth1/9
+                                                Eth1/11, Eth1/12, Eth1/13
+                                                Eth1/14, Eth1/15, Eth1/17
+                                                Eth1/18, Eth1/19, Eth1/20
+                                                Eth1/21, Eth1/22, Eth1/23
+                                                Eth1/24, Eth1/25, Eth1/26
+                                                Eth1/27, Eth1/28, Eth1/29
+                                                Eth1/30, Eth1/31, Eth1/32
+                                                Eth1/33, Eth1/34, Eth1/35
+                                                Eth1/36, Eth1/37, Eth1/38
+                                                Eth1/39, Eth1/40, Eth1/41
+                                                Eth1/42, Eth1/43, Eth1/44
+                                                Eth1/45, Eth1/46, Eth1/49
+                                                Eth1/50, Eth1/51, Eth1/52
+                                                Eth1/53, Eth1/54
+10   NEU_SRV_MGMT                     active    Po1, Eth1/6, Eth1/47, Eth1/48
+115  Options_CC2_to_CME               active
+2010 CC2-NEU-WNSW-P02                 active    Po1, Eth1/47, Eth1/48

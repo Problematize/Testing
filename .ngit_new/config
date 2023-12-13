@@ -1,0 +1,26 @@
+#[core]
+#	repositoryformatversion = 0
+#	filemode = true
+#	bare = false
+#	logallrefupdates = true
+#[remote "origin"]
+#	url = ssh://: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@10.128.148.5/eralord/neutrality
+#	fetch = +refs/heads/*:refs/remotes/origin/*
+
+
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+[user]
+        email = tpage29@yahoo.co.uk
+        name = eralord
+[remote "orgin"]
+        url = ssh://eralord@10.128.148.5/eralord/neutrality
+        fetch = +refs/heads/*:refs/remotes/orgin/*
+        pushurl = ssh://eralord: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@10.128.148.5/eralord/neutrality
+[remote "origin"]
+	url = ssh://eralord@10.128.148.5/eralord/neutrality
+        fetch = +refs/heads/*:refs/remotes/origin/*
+        pushurl = http://eralord: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@10.128.148.5:22/eralord/neutrality

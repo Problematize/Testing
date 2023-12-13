@@ -1,0 +1,264 @@
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname MIL2-NEU-OOB-P01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$t2OE$rbxifR3SK4.ZZMOtr3ElY.
+!
+username admin privilege 15 password 7 013457055F02071B715E5D
+username unimus password 7 1439411E18360B7A653C2A
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 051F52382E42480634373B06453E56602C23253031375D092237
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+!
+!
+aaa session-id common
+switch 3 provision ws-c3750v2-48ps
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+ip routing
+ip domain-name neutralityms.com
+ip name-server 10.128.148.251
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-355051648
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-355051648
+ revocation-check none
+ rsakeypair TP-self-signed-355051648
+!
+!
+crypto pki certificate chain TP-self-signed-355051648
+ certificate self-signed 01
+  30820258 308201C1 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  30312E30 2C060355 04031325 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 33353530 35313634 38301E17 0D393330 33303130 30303131
+  355A170D 32303031 30313030 30303030 5A303031 2E302C06 03550403 1325494F
+  532D5365 6C662D53 69676E65 642D4365 72746966 69636174 652D3335 35303531
+  36343830 819F300D 06092A86 4886F70D 01010105 0003818D 00308189 02818100
+  A107F209 07B72411 1B1EFA6C E8AA6E9B 15486003 BEA95F58 5BB8DAFB 20B77BA0
+  13609119 80838497 2CB7C793 0C5F858A CA123076 D464BB02 FD9F3187 773E735B
+  38B34840 D8B5D96E 07507DC8 1E4BFCF3 26213B31 045C1867 A6290073 ACF0F39E
+  F8C37DBE 44F9A50D 1EA443E0 4EAC2C91 36D5B269 5002D28B B4C15242 E5D4D66F
+  02030100 01A38181 307F300F 0603551D 130101FF 04053003 0101FF30 2C060355
+  1D110425 30238221 4D494C32 2D4E4555 2D4F4F42 2D503031 2E6E6575 7472616C
+  6974796D 732E636F 6D301F06 03551D23 04183016 80149FB5 CDD7177B DD48B3B2
+  75D9D207 A734A4CA 4C91301D 0603551D 0E041604 149FB5CD D7177BDD 48B3B275
+  D9D207A7 34A4CA4C 91300D06 092A8648 86F70D01 01040500 03818100 9F4663FB
+  08CCF1C2 3571D94F 92AA3D3C 87916985 15DB9A9D 76F5A84D DA83BE3B CC75260B
+  12E28D2B 3B6B149B 468695B7 D774A029 07C0AB08 1C7FC44F E459A85C 39E27DD7
+  CB1946D3 97E8946E 1D1DFC45 52988DC4 04A5BD0A 9D94F4F5 EB464088 D5D85997
+  C2228948 117F0AC5 D8D856F9 B2F3B6D2 3E0EC2F6 89F9E816 E08DFEAB
+  quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree etherchannel guard misconfig
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 2
+!
+vlan 4010
+ name MIL2_OOB
+!
+!
+!
+!
+interface FastEthernet3/0/1
+ description MIL2-NEU-MGMT *** Fa1/0/1 - MGMT Access to MIL2-NEU-WNSW-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/2
+ description MIL2-NEU-MGMT *** Fa1/0/2 - MGMT Access to MIL2-NEU-WNSW-P02 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/3
+ description MIL2-NEU-MGMT *** Fa1/0/3 - MGMT Access to MIL2-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/4
+ description MIL2-NEU-MGMT *** Fa1/0/4 - iLo Access to MIL2-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/5
+ description MIL2-NEU-MGMT *** Fa1/0/5 - MGMT Access to MIL2-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/6
+!
+interface FastEthernet3/0/7
+!
+interface FastEthernet3/0/8
+!
+interface FastEthernet3/0/9
+!
+interface FastEthernet3/0/10
+!
+interface FastEthernet3/0/11
+!
+interface FastEthernet3/0/12
+!
+interface FastEthernet3/0/13
+!
+interface FastEthernet3/0/14
+!
+interface FastEthernet3/0/15
+!
+interface FastEthernet3/0/16
+!
+interface FastEthernet3/0/17
+!
+interface FastEthernet3/0/18
+!
+interface FastEthernet3/0/19
+!
+interface FastEthernet3/0/20
+!
+interface FastEthernet3/0/21
+!
+interface FastEthernet3/0/22
+!
+interface FastEthernet3/0/23
+!
+interface FastEthernet3/0/24
+!
+interface FastEthernet3/0/25
+!
+interface FastEthernet3/0/26
+!
+interface FastEthernet3/0/27
+!
+interface FastEthernet3/0/28
+!
+interface FastEthernet3/0/29
+!
+interface FastEthernet3/0/30
+!
+interface FastEthernet3/0/31
+!
+interface FastEthernet3/0/32
+!
+interface FastEthernet3/0/33
+!
+interface FastEthernet3/0/34
+!
+interface FastEthernet3/0/35
+!
+interface FastEthernet3/0/36
+!
+interface FastEthernet3/0/37
+!
+interface FastEthernet3/0/38
+!
+interface FastEthernet3/0/39
+!
+interface FastEthernet3/0/40
+!
+interface FastEthernet3/0/41
+!
+interface FastEthernet3/0/42
+!
+interface FastEthernet3/0/43
+!
+interface FastEthernet3/0/44
+!
+interface FastEthernet3/0/45
+!
+interface FastEthernet3/0/46
+!
+interface FastEthernet3/0/47
+!
+interface FastEthernet3/0/48
+!
+interface GigabitEthernet3/0/1
+ description MIL2-NEU-MGMT *** MIL2-OOB-WNSW-P01 Gi1/0/1 to NEU BB via Cogent VPLS - 1G ***
+ no switchport
+ ip address 10.245.0.67 255.255.255.192
+ speed nonegotiate
+!
+interface GigabitEthernet3/0/2
+!
+interface GigabitEthernet3/0/3
+!
+interface GigabitEthernet3/0/4
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan4010
+ description MIL2_OOB
+ ip address 10.128.148.81 255.255.255.248
+!
+router bgp 64522
+ no synchronization
+ bgp router-id 10.245.0.67
+ bgp log-neighbor-changes
+ network 10.128.148.80 mask 255.255.255.248
+ neighbor 10.245.0.65 remote-as 64520
+ neighbor 10.245.0.65 transport path-mtu-discovery
+ neighbor 10.245.0.65 description eBGP to LD4-NEU-OOB-P01
+ neighbor 10.245.0.65 timers 6 20
+ neighbor 10.245.0.65 soft-reconfiguration inbound
+ no auto-summary
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.245.0.65
+ip http server
+ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+end
+
+show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa3/0/6, Fa3/0/7, Fa3/0/8, Fa3/0/9, Fa3/0/10, Fa3/0/11, Fa3/0/12, Fa3/0/13, Fa3/0/14, Fa3/0/15, Fa3/0/16, Fa3/0/17, Fa3/0/18, Fa3/0/19, Fa3/0/20
+                                                Fa3/0/21, Fa3/0/22, Fa3/0/23, Fa3/0/24, Fa3/0/25, Fa3/0/26, Fa3/0/27, Fa3/0/28, Fa3/0/29, Fa3/0/30, Fa3/0/31, Fa3/0/32, Fa3/0/33, Fa3/0/34, Fa3/0/35
+                                                Fa3/0/36, Fa3/0/37, Fa3/0/38, Fa3/0/39, Fa3/0/40, Fa3/0/41, Fa3/0/42, Fa3/0/43, Fa3/0/44, Fa3/0/45, Fa3/0/46, Fa3/0/47, Fa3/0/48, Gi3/0/2, Gi3/0/3
+                                                Gi3/0/4
+2    VLAN0002                         active
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+4010 MIL2_OOB                         active    Fa3/0/1, Fa3/0/2, Fa3/0/3, Fa3/0/4, Fa3/0/5

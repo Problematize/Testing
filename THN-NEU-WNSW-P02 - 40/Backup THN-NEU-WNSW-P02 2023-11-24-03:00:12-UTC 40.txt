@@ -1,0 +1,360 @@
+!Command: show running-config
+!Running configuration last done at: Thu Nov 23 13:21:04 2023
+!Time: Fri Nov 24 03:01:45 2023
+
+version 10.1(2) Bios:version 07.56
+hostname THN-NEU-WNSW-P02
+vdc THN-NEU-WNSW-P02 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature vrrp
+feature scheduler
+nv overlay evpn
+feature ospf
+feature bgp
+feature pim
+feature interface-vlan
+feature vn-segment-vlan-based
+feature lldp
+feature bfd
+clock timezone GMT 0 0
+clock summer-time BST 2 Sun Mar 02:00 1 Sun Nov 02:00 60
+clock protocol none vdc 1
+feature nv overlay
+
+no password strength-check
+username admin password 5 $5$KNECNH$TAfzqgOoeAmiIPSjKq0gE/56pYBdeYTKIupNpl0SXc0  role network-admin
+ssh kexalgos all
+
+ssh ciphers all
+
+ssh macs all
+
+ssh keytypes all
+
+ip domain-lookup
+ip name-server 10.128.148.251
+ip name-server 10.128.148.251 use-vrf management
+radius-server host 10.128.148.251 key 7 "w4AtffjRJOd.H2*wedoip.sPM" authentication accounting
+aaa group server radius DALIO
+    server 10.128.148.251
+    use-vrf management
+    source-interface mgmt0
+ip access-list acl-snmp-rw-in
+  10 remark Allow Observium
+  20 permit ip 10.128.148.5/32 any
+  30 permit ip 10.128.149.12/32 any
+ip access-list acl-vty-in
+  10 permit ip 172.16.138.0/24 any
+  20 permit ip 172.16.139.0/24 any
+  30 permit ip 10.245.0.0/30 any
+  40 permit ip 10.246.0.0/30 any
+  50 permit ip 10.247.0.0/30 any
+  60 permit ip 10.248.0.0/30 any
+  70 permit ip 10.249.0.0/24 any
+  80 permit ip 10.128.148.0/24 any
+  90 permit ip 10.128.149.0/24 any
+  100 permit ip 10.112.134.192/27 any
+  110 permit ip 10.112.135.192/27 any
+  120 permit ip 10.212.136.192/27 any
+copp profile strict
+bfd multihop interval 250 min_rx 250 multiplier 1
+snmp-server source-interface traps loopback1
+snmp-server user admin network-admin auth md5 0x442a7b4f1267c696ca3d601c7a79125f priv aes-128 0x442a7b4f1267c696ca3d601c7a79125f localizedkey
+snmp-server host 10.128.148.5 traps version 2c N3utRA1!ty
+snmp-server host 10.128.149.12 traps version 2c N3utRA1!ty
+rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+snmp-server enable traps callhome event-notify
+snmp-server enable traps callhome smtp-send-fail
+snmp-server enable traps cfs state-change-notif
+snmp-server enable traps lldp lldpRemTablesChange
+snmp-server enable traps cfs merge-failure
+snmp-server enable traps aaa server-state-change
+snmp-server enable traps feature-control FeatureOpStatusChange
+snmp-server enable traps sysmgr cseFailSwCoreNotifyExtended
+snmp-server enable traps config ccmCLIRunningConfigChanged
+snmp-server enable traps snmp authentication
+snmp-server enable traps link cisco-xcvr-mon-status-chg
+snmp-server enable traps vtp notifs
+snmp-server enable traps vtp vlancreate
+snmp-server enable traps vtp vlandelete
+snmp-server enable traps bridge newroot
+snmp-server enable traps bridge topologychange
+snmp-server enable traps stpx inconsistency
+snmp-server enable traps stpx root-inconsistency
+snmp-server enable traps stpx loop-inconsistency
+snmp-server enable traps system Clock-change-notification
+snmp-server enable traps feature-control ciscoFeatOpStatusChange
+snmp-server enable traps mmode cseNormalModeChangeNotify
+snmp-server enable traps mmode cseMaintModeChangeNotify
+snmp-server enable traps syslog message-generated
+snmp-server community N3utRA1!ty group network-admin
+snmp-server community N3utRA1!ty use-ipv4acl acl-snmp-rw-in
+ntp server 10.128.149.12 use-vrf default
+ntp source 172.16.138.197
+aaa authentication login default group DALIO local
+aaa authentication login console group DALIO local
+system jumbomtu 9000
+
+ip pim rp-address 9.9.9.254 group-list 224.0.0.0/4
+ip pim ssm range 232.0.0.0/8
+vlan 1,10,2010
+vlan 10
+  name Server_Universal_Access
+vlan 2010
+  name THN-NEU-WNSW-P01
+
+no spanning-tree vlan 20
+ip prefix-list pl-loopback-only seq 10 permit 0.0.0.0/0 eq 32
+route-map rm-loopback-routes permit 10
+  match ip address prefix-list pl-loopback-only
+route-map rm-nexthop-unchanged permit 10
+  set ip next-hop unchanged
+vrf context management
+  ip route 0.0.0.0/0 10.128.148.73
+
+
+interface Vlan1
+
+interface Vlan10
+  description NEU_SRV_UA
+  no shutdown
+  mtu 9000
+  ip address 10.128.149.19/29
+  ip pim sparse-mode
+  vrrp 1
+    authentication text VL_10
+    address 10.128.149.17
+    no shutdown
+
+interface Vlan2010
+  description THN-NEU-XC *** Et1/54 - THN-NEU-WNSW-P01 Et1/54 - 100Gb ***
+  no shutdown
+  mtu 9000
+  ip address 172.16.139.14/30
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback100
+
+interface Ethernet1/1
+
+interface Ethernet1/2
+
+interface Ethernet1/3
+
+interface Ethernet1/4
+
+interface Ethernet1/5
+  description thn-neu-srv-01 OB3
+  no shutdown
+
+interface Ethernet1/6
+  description NEU-XC *** Et1/6 - THN-NEU-SRV-01 10G2 - 10Gb ***
+  switchport
+  switchport access vlan 10
+  no shutdown
+
+interface Ethernet1/7
+
+interface Ethernet1/8
+
+interface Ethernet1/9
+
+interface Ethernet1/10
+
+interface Ethernet1/11
+  no shutdown
+
+interface Ethernet1/12
+  no shutdown
+
+interface Ethernet1/13
+
+interface Ethernet1/14
+
+interface Ethernet1/15
+
+interface Ethernet1/16
+
+interface Ethernet1/17
+
+interface Ethernet1/18
+
+
+interface Ethernet1/19
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+
+interface Ethernet1/22
+
+interface Ethernet1/23
+
+interface Ethernet1/24
+
+interface Ethernet1/25
+
+interface Ethernet1/26
+
+interface Ethernet1/27
+
+interface Ethernet1/28
+
+interface Ethernet1/29
+
+interface Ethernet1/30
+
+interface Ethernet1/31
+
+interface Ethernet1/32
+
+interface Ethernet1/33
+
+interface Ethernet1/34
+
+interface Ethernet1/35
+
+interface Ethernet1/36
+
+interface Ethernet1/37
+
+interface Ethernet1/38
+
+interface Ethernet1/39
+
+interface Ethernet1/40
+
+interface Ethernet1/41
+
+interface Ethernet1/42
+
+interface Ethernet1/43
+
+interface Ethernet1/44
+
+interface Ethernet1/45
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+
+interface Ethernet1/48
+
+interface Ethernet1/49
+
+interface Ethernet1/50
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+  description THN-NEU-XC *** Et1/52 - NSID001290 - LHC-NEU-WNSW-P02 Et1/52 - 100Gb ***
+  mtu 9000
+  ip address 10.249.0.57/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/53
+
+interface Ethernet1/54
+  description NEU-XC *** Et1/54 - THN-NEU-WNSW-P01 Et1/54 - 100Gb ***
+  switchport
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  no shutdown
+
+interface mgmt0
+  vrf member management
+  ip address 10.128.148.75/29
+
+interface loopback1
+  description NEU-MGMT *** THN Lo1 Management ***
+  ip address 172.16.138.197/32
+  ip ospf network point-to-point
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface loopback100
+  description VTEP-IP
+  ip address 1.1.1.197/32
+  ip pim sparse-mode
+icam monitor scale
+
+line console
+line vty
+  access-class acl-vty-in in
+boot nxos bootflash:/nxos.10.1.2.bin
+router ospf 10
+  router-id 172.16.138.197
+  log-adjacency-changes
+  max-lsa 12000
+  passive-interface default
+router bgp 65523
+  router-id 172.16.138.197
+  log-neighbor-changes
+  address-family ipv4 unicast
+    network 10.128.149.16/29
+    redistribute direct route-map rm-loopback-routes
+  neighbor 10.249.0.58
+    bfd
+    remote-as 65521
+    description eBGP to LHC-NEU-WNSW-P02
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+  neighbor 172.16.138.185
+    bfd
+    remote-as 65511
+    description EVPN to LD4-NEU-WNSW-P02
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.139.13
+    bfd
+    remote-as 65522
+    description eBGP to THN-NEU-WNSW-P01
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+evpn
+
+logging server 10.128.148.5 6
+logging server 10.128.149.12 6
+logging source-interface loopback1
+
+
+
+
+show vlan brief
+
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+10   Server_Universal_Access          active    Eth1/6, Eth1/54
+2010 THN-NEU-WNSW-P01                 active    Eth1/54

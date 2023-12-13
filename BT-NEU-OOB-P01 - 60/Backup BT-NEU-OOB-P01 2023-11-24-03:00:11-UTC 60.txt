@@ -1,0 +1,274 @@
+!
+! Last configuration change at 12:07:00 UTC Wed Aug 24 1994 by unimus
+!
+version 15.0
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname BT-NEU-OOB-P01
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$SD.R$LJoqd/YORlxokIueYuoAR.
+!
+username admin password 7 1430430A080D2B3F743A20
+username unimus password 7 06285C34587C284844030B
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 06125B1643400F1628253E1F42367861232F3E36260649183735
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+!
+!
+!
+!
+!
+aaa session-id common
+switch 1 provision ws-c3750v2-48ps
+system mtu routing 1500
+vtp mode transparent
+ip routing
+ip domain-name neutralityms.com
+ip name-server 10.128.148.251
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-3892025600
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3892025600
+ revocation-check none
+ rsakeypair TP-self-signed-3892025600
+!
+!
+crypto pki certificate chain TP-self-signed-3892025600
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 33383932 30323536 3030301E 170D3933 30333031 30303032
+  35355A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 38393230
+  32353630 3030819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  8100CCAE A9F5DC8C 8D254FE1 7D3FAF97 C42CEC31 B6E7FC1C D8757D23 A5318AA7
+  9A9DE3D3 51C4681D 7B4AF121 B07F5016 7BC82335 2F427A2D B0B71616 4A54F9B2
+  14D47671 2ADEAD81 F72C44FD 4A0DBDA1 DDF2F185 A80A7F60 F4F40205 24134C9C
+  D3476766 94BC541A 33053DC3 1D760493 FA217CB1 28A6888D BA3E06C5 35E0269C
+  E4630203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603
+  551D2304 18301680 1400F540 3CA7D5F8 E81B6D99 CC1FCAC1 FF61C07B D8301D06
+  03551D0E 04160414 00F5403C A7D5F8E8 1B6D99CC 1FCAC1FF 61C07BD8 300D0609
+  2A864886 F70D0101 05050003 81810043 4EBA295F 66935433 CA1D0291 DCE4DC50
+  84047434 752D23B7 6C150F4E F8C5BEB4 8C756DA0 BCA8ABCD AF136925 E2CD3CCA
+  55F289A8 EF8D5947 EB304B9D 48EA4A6C A732ED09 3BAF70C2 93D57A94 C3FD0748
+  0894F9CB 009AA75C 3274DFA0 1C48F218 1D0AFB1F 9802074A 26A1CA30 109EF6BE
+  40137BD4 69FEC5AA DB85B736 1BC975
+  	quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 4010
+ name BT_OOB
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet1/0/1
+ description BT-NEU-MGMT *** Fa1/0/1 - MGMT Access to BT-NEU-WNSW-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/2
+ description BT-NEU-MGMT *** Fa1/0/2 - MGMT Access to BT-NEU-WNSW-P02 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/3
+ description BT-NEU-MGMT *** Fa1/0/3 - MGMT Access to BT-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/4
+ description BT-NEU-MGMT *** Fa1/0/4 - iLo Access to BT-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/5
+ description BT-NEU-MGMT *** Fa1/0/5 - MGMT Access to BT-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet1/0/6
+!
+interface FastEthernet1/0/7
+!
+interface FastEthernet1/0/8
+!
+interface FastEthernet1/0/9
+!
+interface FastEthernet1/0/10
+!
+interface FastEthernet1/0/11
+!
+interface FastEthernet1/0/12
+!
+interface FastEthernet1/0/13
+!
+interface FastEthernet1/0/14
+!
+interface FastEthernet1/0/15
+!
+interface FastEthernet1/0/16
+!
+interface FastEthernet1/0/17
+!
+interface FastEthernet1/0/18
+!
+interface FastEthernet1/0/19
+!
+interface FastEthernet1/0/20
+!
+interface FastEthernet1/0/21
+!
+interface FastEthernet1/0/22
+!
+interface FastEthernet1/0/23
+!
+interface FastEthernet1/0/24
+!
+interface FastEthernet1/0/25
+!
+interface FastEthernet1/0/26
+!
+interface FastEthernet1/0/27
+!
+interface FastEthernet1/0/28
+!
+interface FastEthernet1/0/29
+!
+interface FastEthernet1/0/30
+!
+interface FastEthernet1/0/31
+!
+interface FastEthernet1/0/32
+!
+interface FastEthernet1/0/33
+!
+interface FastEthernet1/0/34
+!
+interface FastEthernet1/0/35
+!
+interface FastEthernet1/0/36
+!
+interface FastEthernet1/0/37
+!
+interface FastEthernet1/0/38
+!
+interface FastEthernet1/0/39
+!
+interface FastEthernet1/0/40
+!
+interface FastEthernet1/0/41
+!
+interface FastEthernet1/0/42
+!
+interface FastEthernet1/0/43
+!
+interface FastEthernet1/0/44
+!
+interface FastEthernet1/0/45
+!
+interface FastEthernet1/0/46
+!
+interface FastEthernet1/0/47
+!
+interface FastEthernet1/0/48
+!
+interface GigabitEthernet1/0/1
+ description BT-NEU-MGMT *** BT-OOB-WNSW-P01 Gi1/0/1 to NEU BB via Cogent VPLS - 1G ***
+ no switchport
+ ip address 10.245.0.75 255.255.255.192
+ speed nonegotiate
+!
+interface GigabitEthernet1/0/2
+!
+interface GigabitEthernet1/0/3
+!
+interface GigabitEthernet1/0/4
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan4010
+ description BT_OOB
+ ip address 10.128.148.145 255.255.255.248
+!
+router bgp 64530
+ bgp router-id 10.245.0.75
+ bgp log-neighbor-changes
+ network 10.128.148.144 mask 255.255.255.248
+ neighbor 10.245.0.65 remote-as 64520
+ neighbor 10.245.0.65 description eBGP to LD4-NEU-OOB-P01
+ neighbor 10.245.0.65 timers 6 20
+ neighbor 10.245.0.65 soft-reconfiguration inbound
+!
+ip http server
+ip http secure-server
+!
+!
+ip route 0.0.0.0 0.0.0.0 10.245.0.65
+!
+!
+!
+!
+!
+vstack
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+end
+
+show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa1/0/6, Fa1/0/7, Fa1/0/8, Fa1/0/9, Fa1/0/10, Fa1/0/11, Fa1/0/12, Fa1/0/13, Fa1/0/14, Fa1/0/15, Fa1/0/16, Fa1/0/17, Fa1/0/18, Fa1/0/19, Fa1/0/20
+                                                Fa1/0/21, Fa1/0/22, Fa1/0/23, Fa1/0/24, Fa1/0/25, Fa1/0/26, Fa1/0/27, Fa1/0/28, Fa1/0/29, Fa1/0/30, Fa1/0/31, Fa1/0/32, Fa1/0/33, Fa1/0/34, Fa1/0/35
+                                                Fa1/0/36, Fa1/0/37, Fa1/0/38, Fa1/0/39, Fa1/0/40, Fa1/0/41, Fa1/0/42, Fa1/0/43, Fa1/0/44, Fa1/0/45, Fa1/0/46, Fa1/0/47, Fa1/0/48, Gi1/0/2, Gi1/0/3
+                                                Gi1/0/4
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+4010 BT_OOB                           active    Fa1/0/1, Fa1/0/2, Fa1/0/3, Fa1/0/4, Fa1/0/5

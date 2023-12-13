@@ -1,0 +1,273 @@
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname CC2-NEU-OOB-P01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$Sjhr$Zd2MpNvCw5bkobzvqWKRU/
+!
+username admin password 7 123E541616020D107A3937
+username unimus password 7 06285C34587C284844030B
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 001047310B550D092213605A472B575D150C01072E3E6A260701
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+!
+!
+aaa session-id common
+switch 1 provision ws-c3750g-48ts
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+ip routing
+ip domain-name neutralityms.com
+ip name-server 10.128.148.251
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-323125632
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-323125632
+ revocation-check none
+ rsakeypair TP-self-signed-323125632
+!
+!
+crypto pki certificate chain TP-self-signed-323125632
+ certificate self-signed 01
+  30820257 308201C0 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  30312E30 2C060355 04031325 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 33323331 32353633 32301E17 0D393330 33303130 30303235
+  385A170D 32303031 30313030 30303030 5A303031 2E302C06 03550403 1325494F
+  532D5365 6C662D53 69676E65 642D4365 72746966 69636174 652D3332 33313235
+  36333230 819F300D 06092A86 4886F70D 01010105 0003818D 00308189 02818100
+  B902A660 74D651F0 84B0AFCE AC515E6D 92C1BEE9 9A91A6AE 579165B8 EA847BA8
+  2EA11A81 2CD8EA3B 47B83EC7 04A9F4B7 6F0368E1 7E65D313 AD2EC95F 177C6BFF
+  49623EA8 9CA4A406 C29E6E53 8DA500D9 B8BAF14A 23BA2DB0 699C8407 7B377192
+  28A2FBCD EF8521E3 C34B7451 292AD911 87881A83 56558959 D01C4B45 6C296321
+  02030100 01A38180 307E300F 0603551D 130101FF 04053003 0101FF30 2B060355
+  1D110424 30228220 4343322D 4E45552D 4F4F422D 5030312E 6E657574 72616C69
+  74796D73 2E636F6D 301F0603 551D2304 18301680 149C3630 B0E9217D EB320E07
+  FAE3F3D0 1F349422 7D301D06 03551D0E 04160414 9C3630B0 E9217DEB 320E07FA
+  E3F3D01F 3494227D 300D0609 2A864886 F70D0101 04050003 81810010 1988756E
+  21718484 85A22303 9A5E8465 C890F5E4 0F26980E A3573F8F 0C3A9F7B CD33C72C
+  81472DC6 74A86B33 B39BF764 5A623CCE 9739FDB2 0C950CB7 4FC66A46 A0624978
+  312D0901 607C4129 DE4C9184 CAD375B3 602E2251 90863527 67F9C5BA 49B5BC53
+  8D01F30D 51B21EC4 DE450614 B03FB548 47B4BFF5 7C4A0A5F BB4F2E
+  quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree etherchannel guard misconfig
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 40
+ name CC2_ADVA_OOB
+!
+vlan 4010
+ name CC2_OOB
+!
+ip ssh version 2
+!
+!
+!
+interface GigabitEthernet1/0/1
+ description CC2-NEU-MGMT *** Gi1/0/1 - MGMT Access to CC2-NEU-WNSW-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface GigabitEthernet1/0/2
+ description CC2-NEU-MGMT *** Gi1/0/2 - MGMT Access to CC2-NEU-WNSW-P02 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface GigabitEthernet1/0/3
+ description CC2-NEU-MGMT *** Gi1/0/3 - MGMT Access to CC2-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface GigabitEthernet1/0/4
+ description CC2-NEU-MGMT *** Gi1/0/4 - MGMT Access to CC2-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface GigabitEthernet1/0/5
+!
+interface GigabitEthernet1/0/6
+ description CC2-NEU-MGMT *** Gi1/0/6 - MGMT Access to CC2-NEU-ADVA-P01 - 1Gb ***
+ switchport access vlan 40
+ switchport mode access
+!
+interface GigabitEthernet1/0/7
+ description CC2-NEU-MGMT *** Gi1/0/7 - MGMT Access to CC2-NEU-ADVA-P02 - 1Gb ***
+ switchport access vlan 40
+ switchport mode access
+!
+interface GigabitEthernet1/0/8
+!
+interface GigabitEthernet1/0/9
+!
+interface GigabitEthernet1/0/10
+!
+interface GigabitEthernet1/0/11
+!
+interface GigabitEthernet1/0/12
+!
+interface GigabitEthernet1/0/13
+!
+interface GigabitEthernet1/0/14
+!
+interface GigabitEthernet1/0/15
+!
+interface GigabitEthernet1/0/16
+!
+interface GigabitEthernet1/0/17
+!
+interface GigabitEthernet1/0/18
+!
+interface GigabitEthernet1/0/19
+!
+interface GigabitEthernet1/0/20
+!
+interface GigabitEthernet1/0/21
+!
+interface GigabitEthernet1/0/22
+!
+interface GigabitEthernet1/0/23
+!
+interface GigabitEthernet1/0/24
+!
+interface GigabitEthernet1/0/25
+!
+interface GigabitEthernet1/0/26
+!
+interface GigabitEthernet1/0/27
+!
+interface GigabitEthernet1/0/28
+!
+interface GigabitEthernet1/0/29
+!
+interface GigabitEthernet1/0/30
+!
+interface GigabitEthernet1/0/31
+!
+interface GigabitEthernet1/0/32
+!
+interface GigabitEthernet1/0/33
+!
+interface GigabitEthernet1/0/34
+!
+interface GigabitEthernet1/0/35
+!
+interface GigabitEthernet1/0/36
+!
+interface GigabitEthernet1/0/37
+!
+interface GigabitEthernet1/0/38
+!
+interface GigabitEthernet1/0/39
+!
+interface GigabitEthernet1/0/40
+!
+interface GigabitEthernet1/0/41
+!
+interface GigabitEthernet1/0/42
+!
+interface GigabitEthernet1/0/43
+!
+interface GigabitEthernet1/0/44
+!
+interface GigabitEthernet1/0/45
+!
+interface GigabitEthernet1/0/46
+!
+interface GigabitEthernet1/0/47
+!
+interface GigabitEthernet1/0/48
+!
+interface GigabitEthernet1/0/49
+ description CC2-NEU-MGMT *** CC2-OOB-WNSW-P01 Gi1/0/49 to NEU BB via Cogent VPLS - 1G ***
+ no switchport
+ ip address 10.245.0.78 255.255.255.192
+ speed nonegotiate
+!
+interface GigabitEthernet1/0/50
+!
+interface GigabitEthernet1/0/51
+!
+interface GigabitEthernet1/0/52
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan40
+ description CC2_ADVA_OOB
+ ip address 10.128.148.49 255.255.255.248
+!
+interface Vlan4010
+ description CC2_OOB
+ ip address 10.128.148.177 255.255.255.248
+!
+router bgp 64534
+ no synchronization
+ bgp router-id 10.245.0.78
+ bgp log-neighbor-changes
+ network 10.128.148.48 mask 255.255.255.248
+ network 10.128.148.176 mask 255.255.255.248
+ neighbor 10.245.0.65 remote-as 64520
+ neighbor 10.245.0.65 transport path-mtu-discovery
+ neighbor 10.245.0.65 description eBGP to LD4-NEU-OOB-P01
+ neighbor 10.245.0.65 timers 6 20
+ neighbor 10.245.0.65 soft-reconfiguration inbound
+ no auto-summary
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.245.0.65
+ip http server
+ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+end
+
+show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Gi1/0/5, Gi1/0/8, Gi1/0/9, Gi1/0/10, Gi1/0/11, Gi1/0/12, Gi1/0/13, Gi1/0/14, Gi1/0/15, Gi1/0/16, Gi1/0/17, Gi1/0/18, Gi1/0/19, Gi1/0/20, Gi1/0/21
+                                                Gi1/0/22, Gi1/0/23, Gi1/0/24, Gi1/0/25, Gi1/0/26, Gi1/0/27, Gi1/0/28, Gi1/0/29, Gi1/0/30, Gi1/0/31, Gi1/0/32, Gi1/0/33, Gi1/0/34, Gi1/0/35, Gi1/0/36
+                                                Gi1/0/37, Gi1/0/38, Gi1/0/39, Gi1/0/40, Gi1/0/41, Gi1/0/42, Gi1/0/43, Gi1/0/44, Gi1/0/45, Gi1/0/46, Gi1/0/47, Gi1/0/48, Gi1/0/50, Gi1/0/51, Gi1/0/52
+40   CC2_ADVA_OOB                     active    Gi1/0/6, Gi1/0/7
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+4010 CC2_OOB                          active    Gi1/0/1, Gi1/0/2, Gi1/0/3, Gi1/0/4

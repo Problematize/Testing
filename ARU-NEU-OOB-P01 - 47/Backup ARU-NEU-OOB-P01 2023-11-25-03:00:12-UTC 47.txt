@@ -1,0 +1,262 @@
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname ARU-NEU-OOB-P01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$uexP$vY04XlTGdFWgRLsTl7j9u.
+!
+username admin password 7 03230A0A020620581E1B0A
+username unimus password 7 0228574E1F342E700D5A10
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 06125B1643400F1628253E1F42367861232F3E36260649183735
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+!
+!
+aaa session-id common
+switch 4 provision ws-c3750v2-48ps
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+ip routing
+ip domain-name neutralityms.com
+ip name-server 10.128.148.251
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-118082176
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-118082176
+ revocation-check none
+ rsakeypair TP-self-signed-118082176
+!
+!
+crypto pki certificate chain TP-self-signed-118082176
+ certificate self-signed 01
+  30820257 308201C0 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  30312E30 2C060355 04031325 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 31313830 38323137 36301E17 0D393330 33303130 30303131
+  365A170D 32303031 30313030 30303030 5A303031 2E302C06 03550403 1325494F
+  532D5365 6C662D53 69676E65 642D4365 72746966 69636174 652D3131 38303832
+  31373630 819F300D 06092A86 4886F70D 01010105 0003818D 00308189 02818100
+  C1B7E2CD 78E9C06A 409256DD 15469073 43D4BDB1 F564816E E46E90E9 402B25E1
+  8F745991 738B31B8 C62D60C6 61E38662 919D1248 3DA8D247 5F30A3A9 1DBD822C
+  26B01A10 7211A22A 73780EBD 27422130 AF29F484 66C7C681 3D6FF325 0CAEB036
+  E8278DB0 ADCAF73E B9CCCD57 F28120C1 F665B445 125521AC 6C9091CB 4D9B880D
+  02030100 01A38180 307E300F 0603551D 130101FF 04053003 0101FF30 2B060355
+  1D110424 30228220 4152552D 4E45552D 4F4F422D 5030312E 6E657574 72616C69
+  74796D73 2E636F6D 301F0603 551D2304 18301680 1451614F 50E6D578 CD624390
+  126DB631 19548753 92301D06 03551D0E 04160414 51614F50 E6D578CD 62439012
+  6DB63119 54875392 300D0609 2A864886 F70D0101 04050003 81810039 6B277B7A
+  34105DA9 A4C8595B 5C585DC8 CB3F2B19 D2EECC7F A0E101FE 518C3BD4 2D2F38F0
+  C186AEC2 846A0BD8 50959304 1ABFFF53 183AC80A 926F15D7 44D8D416 0EA7F660
+  9D138AFB 1E711A36 F391388F 5774B9B3 E9A59F1E 9C49CF28 B021A09C D2FA1E77
+  F28ED779 9048AE02 A712EF88 E23FC816 653678EB D2F97373 6F0111
+  quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree etherchannel guard misconfig
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 4010
+ name ARU_OOB
+!
+!
+!
+!
+interface FastEthernet4/0/1
+ description ARU-NEU-MGMT *** Fa1/0/1 - MGMT Access to ARU-NEU-WNSW-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet4/0/2
+ description ARU-NEU-MGMT *** Fa1/0/2 - MGMT Access to ARU-NEU-WNSW-P02 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet4/0/3
+ description ARU-NEU-MGMT *** Fa1/0/3 - MGMT Access to ARU-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet4/0/4
+ description ARU-NEU-MGMT *** Fa1/0/4 - iLo Access to ARU-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet4/0/5
+ description ARU-NEU-MGMT *** Fa1/0/5 - MGMT Access to ARU-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet4/0/6
+!
+interface FastEthernet4/0/7
+!
+interface FastEthernet4/0/8
+!
+interface FastEthernet4/0/9
+!
+interface FastEthernet4/0/10
+!
+interface FastEthernet4/0/11
+!
+interface FastEthernet4/0/12
+!
+interface FastEthernet4/0/13
+!
+interface FastEthernet4/0/14
+!
+interface FastEthernet4/0/15
+!
+interface FastEthernet4/0/16
+!
+interface FastEthernet4/0/17
+!
+interface FastEthernet4/0/18
+!
+interface FastEthernet4/0/19
+!
+interface FastEthernet4/0/20
+!
+interface FastEthernet4/0/21
+!
+interface FastEthernet4/0/22
+!
+interface FastEthernet4/0/23
+!
+interface FastEthernet4/0/24
+!
+interface FastEthernet4/0/25
+!
+interface FastEthernet4/0/26
+!
+interface FastEthernet4/0/27
+!
+interface FastEthernet4/0/28
+!
+interface FastEthernet4/0/29
+!
+interface FastEthernet4/0/30
+!
+interface FastEthernet4/0/31
+!
+interface FastEthernet4/0/32
+!
+interface FastEthernet4/0/33
+!
+interface FastEthernet4/0/34
+!
+interface FastEthernet4/0/35
+!
+interface FastEthernet4/0/36
+!
+interface FastEthernet4/0/37
+!
+interface FastEthernet4/0/38
+!
+interface FastEthernet4/0/39
+!
+interface FastEthernet4/0/40
+!
+interface FastEthernet4/0/41
+!
+interface FastEthernet4/0/42
+!
+interface FastEthernet4/0/43
+!
+interface FastEthernet4/0/44
+!
+interface FastEthernet4/0/45
+!
+interface FastEthernet4/0/46
+!
+interface FastEthernet4/0/47
+!
+interface FastEthernet4/0/48
+!
+interface GigabitEthernet4/0/1
+ description ARU-NEU-MGMT *** ARU-OOB-WNSW-P01 Gi1/0/1 to NEU BB via Cogent VPLS - 1G ***
+ no switchport
+ ip address 10.245.0.68 255.255.255.192
+ speed nonegotiate
+!
+interface GigabitEthernet4/0/2
+!
+interface GigabitEthernet4/0/3
+!
+interface GigabitEthernet4/0/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan4010
+ description ARU_OOB
+ ip address 10.128.148.89 255.255.255.248
+!
+router bgp 64523
+ no synchronization
+ bgp router-id 10.245.0.68
+ bgp log-neighbor-changes
+ network 10.128.148.88 mask 255.255.255.248
+ neighbor 10.245.0.65 remote-as 64520
+ neighbor 10.245.0.65 transport path-mtu-discovery
+ neighbor 10.245.0.65 description eBGP to LD4-NEU-OOB-P01
+ neighbor 10.245.0.65 timers 6 20
+ neighbor 10.245.0.65 soft-reconfiguration inbound
+ no auto-summary
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.245.0.65
+ip http server
+ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+end
+
+show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa4/0/6, Fa4/0/7, Fa4/0/8, Fa4/0/9, Fa4/0/10, Fa4/0/11, Fa4/0/12, Fa4/0/13, Fa4/0/14, Fa4/0/15, Fa4/0/16, Fa4/0/17, Fa4/0/18, Fa4/0/19, Fa4/0/20
+                                                Fa4/0/21, Fa4/0/22, Fa4/0/23, Fa4/0/24, Fa4/0/25, Fa4/0/26, Fa4/0/27, Fa4/0/28, Fa4/0/29, Fa4/0/30, Fa4/0/31, Fa4/0/32, Fa4/0/33, Fa4/0/34, Fa4/0/35
+                                                Fa4/0/36, Fa4/0/37, Fa4/0/38, Fa4/0/39, Fa4/0/40, Fa4/0/41, Fa4/0/42, Fa4/0/43, Fa4/0/44, Fa4/0/45, Fa4/0/46, Fa4/0/47, Fa4/0/48, Gi4/0/2, Gi4/0/3
+                                                Gi4/0/4
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+4010 ARU_OOB                          active    Fa4/0/1, Fa4/0/2, Fa4/0/3, Fa4/0/4, Fa4/0/5

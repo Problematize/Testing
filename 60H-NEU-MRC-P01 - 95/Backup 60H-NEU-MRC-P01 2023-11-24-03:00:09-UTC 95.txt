@@ -1,0 +1,143 @@
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname 60H-NEU-MRC-P01
+!
+boot-start-marker
+boot-end-marker
+!
+! card type command needed for slot/vwic-slot 0/3
+logging message-counter syslog
+enable secret 5 $1$3lsN$VvVGaIg7XzB.l/gcbT6Tw.
+!
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 15065F3B0B242D2B050119365D3544490651545B5741400D2C22
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+!
+aaa session-id common
+!
+dot11 syslog
+ip source-route
+!
+!
+ip cef
+!
+!
+ip domain name neutralityms.com
+ip name-server 10.128.148.251
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+voice-card 0
+!
+!
+!
+!
+!
+username admin password 7 123E541616020D107A3937
+username unimus password 7 013D55114F39275E605857
+archive
+ log config
+  hidekeys
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ description 60H-NEU-MGMT *** 60H-NEU-MRC-P01 Fa0/0 to 60H-NEU-OOB-P01 Fa1/0/3 ***
+ ip address 10.128.148.188 255.255.255.248
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Group-Async0
+ no ip address
+ encapsulation slip
+ group-range 1/0 1/31
+!
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 10.128.148.185
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+ccm-manager fax protocol cisco
+!
+mgcp fax t38 ecm
+!
+!
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+line con 0
+line aux 0
+line 1/0 1/31
+ transport input telnet
+line vty 0 4
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+scheduler allocate 20000 1000
+end

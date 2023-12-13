@@ -1,0 +1,301 @@
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname LHC-NEU-OOB-P01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$nYfK$a9IwZ/hZ.OY6GrjppXQSv0
+!
+username admin password 7 06215E204847080D550501
+username unimus password 7 072172595A3B3854560612
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 03100F3C09012743633B351159205946032D26272C267B2C2733
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+!
+!
+aaa session-id common
+switch 3 provision ws-c3750v2-48ps
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+ip routing
+ip domain-name neutralityms.com
+ip name-server 10.128.148.251
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-1334057984
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1334057984
+ revocation-check none
+ rsakeypair TP-self-signed-1334057984
+!
+!
+crypto pki certificate chain TP-self-signed-1334057984
+ certificate self-signed 01
+  30820259 308201C2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 31333334 30353739 3834301E 170D3933 30333031 30303031
+  31355A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D31 33333430
+  35373938 3430819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  8100B6CA 0F626FB5 A88AA11B B6E40294 3D908638 07D6E2FB 4C0CF004 99FC5740
+  A89A57B8 0F265559 9A256E3D 17361BA2 14DA83C2 0ACCEED1 70197ADA 9129328C
+  A07EA495 87099337 E5D74BFE 516AD5DA 0926DB91 CDC6B108 91399032 356EA99F
+  C42BB1A6 25A8F837 C8D18788 134E11B3 3BD0FB17 69608413 635AE110 D6D694F3
+  71BD0203 010001A3 8180307E 300F0603 551D1301 01FF0405 30030101 FF302B06
+  03551D11 04243022 82204C48 432D4E45 552D4F4F 422D5030 312E6E65 75747261
+  6C697479 6D732E63 6F6D301F 0603551D 23041830 16801475 5D19C431 8A65F124
+  721FFF3A 830CEC48 4ED76130 1D060355 1D0E0416 0414755D 19C4318A 65F12472
+  1FFF3A83 0CEC484E D761300D 06092A86 4886F70D 01010405 00038181 004629D3
+  B447C92D 7837BB0C B6AA5A58 90DE6920 C3827E4A B6DF5553 B2CF43B9 76AB494A
+  17FD3981 D1EFDF9A 4510712D ED2852CA 5F947E9E 230C280C 23AFE838 ED54EFCB
+  63ADB6A1 2D49768E CACB7171 0C882261 957C375B 2082DCF6 227D3C7B 60231810
+  41349FBB ED67219B 4FFEC492 0B6EFA7E AA92A212 A3CE8FC7 77810504 FF
+  quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 2
+!
+vlan 20
+ name LHC_DEV
+!
+vlan 4010
+ name LHC_OOB
+!
+!
+!
+!
+interface FastEthernet3/0/1
+ description LHC-NEU-MGMT *** Fa1/0/1 - MGMT Access to LHC-NEU-WNSW-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/2
+ description LHC-NEU-MGMT *** Fa1/0/2 - MGMT Access to LHC-NEU-WNSW-P02 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/3
+ description LHC-NEU-MGMT *** Fa1/0/3 - MGMT Access to LHC-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/4
+ description LHC-NEU-MGMT *** Fa1/0/4 - iLO Access to LHC-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/5
+ description LHC-NEU-MGMT *** Fa1/0/5 - MGMT Access to LHC-NEU-SRV-01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/6
+!
+interface FastEthernet3/0/7
+!
+interface FastEthernet3/0/8
+!
+interface FastEthernet3/0/9
+!
+interface FastEthernet3/0/10
+!
+interface FastEthernet3/0/11
+!
+interface FastEthernet3/0/12
+!
+interface FastEthernet3/0/13
+!
+interface FastEthernet3/0/14
+!
+interface FastEthernet3/0/15
+!
+interface FastEthernet3/0/16
+!
+interface FastEthernet3/0/17
+!
+interface FastEthernet3/0/18
+!
+interface FastEthernet3/0/19
+!
+interface FastEthernet3/0/20
+!
+interface FastEthernet3/0/21
+!
+interface FastEthernet3/0/22
+!
+interface FastEthernet3/0/23
+!
+interface FastEthernet3/0/24
+!
+interface FastEthernet3/0/25
+!
+interface FastEthernet3/0/26
+!
+interface FastEthernet3/0/27
+!
+interface FastEthernet3/0/28
+!
+interface FastEthernet3/0/29
+!
+interface FastEthernet3/0/30
+!
+interface FastEthernet3/0/31
+!
+interface FastEthernet3/0/32
+!
+interface FastEthernet3/0/33
+!
+interface FastEthernet3/0/34
+!
+interface FastEthernet3/0/35
+!
+interface FastEthernet3/0/36
+!
+interface FastEthernet3/0/37
+!
+interface FastEthernet3/0/38
+!
+interface FastEthernet3/0/39
+!
+interface FastEthernet3/0/40
+!
+interface FastEthernet3/0/41
+!
+interface FastEthernet3/0/42
+!
+interface FastEthernet3/0/43
+!
+interface FastEthernet3/0/44
+!
+interface FastEthernet3/0/45
+!
+interface FastEthernet3/0/46
+!
+interface FastEthernet3/0/47
+!
+interface FastEthernet3/0/48
+ description LHC-NEU-DEV *** Fa3/0/48 - iLO/MGMT Access to LHC-NEU-DEV-01 - 1Gb ***
+ switchport access vlan 20
+ switchport mode access
+!
+interface GigabitEthernet3/0/1
+ description LHC-NEU-MGMT *** LHC-OOB-WNSW-P01 Gi1/0/1 to NEU BB via Cogent VPLS - 1G ***
+ no switchport
+ ip address 10.245.0.70 255.255.255.192
+ speed nonegotiate
+!
+interface GigabitEthernet3/0/2
+!
+interface GigabitEthernet3/0/3
+!
+interface GigabitEthernet3/0/4
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan20
+ description LHC_DEV
+ ip address 10.128.148.33 255.255.255.248
+ ip access-group acl-dev-in in
+!
+interface Vlan4010
+ description LHC_OOB
+ ip address 10.128.148.105 255.255.255.248
+!
+router bgp 64525
+ no synchronization
+ bgp router-id 10.245.0.70
+ bgp log-neighbor-changes
+ network 10.128.148.32 mask 255.255.255.248
+ network 10.128.148.104 mask 255.255.255.248
+ neighbor 10.245.0.65 remote-as 64520
+ neighbor 10.245.0.65 transport path-mtu-discovery
+ neighbor 10.245.0.65 description eBGP to LD4-NEU-OOB-P01
+ neighbor 10.245.0.65 timers 6 20
+ neighbor 10.245.0.65 soft-reconfiguration inbound
+ no auto-summary
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.245.0.65
+ip http server
+ip http secure-server
+!
+!
+ip access-list extended acl-dev-in
+ permit ip 10.128.148.32 0.0.0.7 10.128.148.32 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.64 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.40 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.48 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.56 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.72 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.80 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.88 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.96 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.104 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.120 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.128 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.136 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.144 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.152 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.160 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.168 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.176 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.184 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.192 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.200 0.0.0.7
+ deny   ip 10.128.148.32 0.0.0.7 10.128.148.208 0.0.0.7
+ permit ip 10.128.148.32 0.0.0.7 10.212.136.0 0.0.0.255
+ permit ip 10.128.148.32 0.0.0.7 any
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+end
+
+show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa3/0/6, Fa3/0/7, Fa3/0/8, Fa3/0/9, Fa3/0/10, Fa3/0/11, Fa3/0/12, Fa3/0/13, Fa3/0/14, Fa3/0/15, Fa3/0/16, Fa3/0/17, Fa3/0/18, Fa3/0/19, Fa3/0/20
+                                                Fa3/0/21, Fa3/0/22, Fa3/0/23, Fa3/0/24, Fa3/0/25, Fa3/0/26, Fa3/0/27, Fa3/0/28, Fa3/0/29, Fa3/0/30, Fa3/0/31, Fa3/0/32, Fa3/0/33, Fa3/0/34, Fa3/0/35
+                                                Fa3/0/36, Fa3/0/37, Fa3/0/38, Fa3/0/39, Fa3/0/40, Fa3/0/41, Fa3/0/42, Fa3/0/43, Fa3/0/44, Fa3/0/45, Fa3/0/46, Fa3/0/47, Gi3/0/2, Gi3/0/3, Gi3/0/4
+2    VLAN0002                         active
+20   LHC_DEV                          active    Fa3/0/48
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+4010 LHC_OOB                          active    Fa3/0/1, Fa3/0/2, Fa3/0/3, Fa3/0/4, Fa3/0/5

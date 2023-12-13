@@ -1,0 +1,265 @@
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname IDR-NEU-OOB-P01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$yv9b$x1DRc8TtPMwLnTNrDZm770
+!
+username admin privilege 15 password 7 132246130F05053E7B363B
+username unimus password 7 132B44071F3E257B6A3031
+aaa new-model
+!
+!
+aaa group server radius DALIO
+ server-private 10.128.148.251 auth-port 1812 acct-port 1813 key 7 051F52382E42480634373B06453E56602C23253031375D092237
+!
+aaa authentication login default local
+aaa authentication login DALIO-AAA group DALIO local
+!
+!
+!
+aaa session-id common
+switch 3 provision ws-c3750v2-48ps
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+ip routing
+ip domain-name neutralityms.com
+ip name-server 10.128.148.251
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-3652538496
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3652538496
+ revocation-check none
+ rsakeypair TP-self-signed-3652538496
+!
+!
+crypto pki certificate chain TP-self-signed-3652538496
+ certificate self-signed 01
+  30820259 308201C2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 33363532 35333834 3936301E 170D3933 30333031 30303031
+  31395A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 36353235
+  33383439 3630819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  8100E488 26F717D7 87148283 45A3E568 9D234167 8C7003BB F1070FEF 9E0F6CCF
+  ED1BC428 A9F15E27 EB90588E A3C9E45E A030029F 3B033418 548A38D5 F6F1A2AF
+  C41F99C9 9EFCA39B 9A8A94AF 916734AD 9A1B6380 5884A6C4 D2C056F2 D4894809
+  5DF2EDE9 A84E6CCB CADAA9A0 D9F6328D C583ECBE D16B5C0D FD67C3C3 C562E05F
+  91330203 010001A3 8180307E 300F0603 551D1301 01FF0405 30030101 FF302B06
+  03551D11 04243022 82204944 522D4E45 552D4F4F 422D5030 312E6E65 75747261
+  6C697479 6D732E63 6F6D301F 0603551D 23041830 16801481 86533A0C 9147304D
+  2A2A3D15 38E45C7A 8E6EC230 1D060355 1D0E0416 04148186 533A0C91 47304D2A
+  2A3D1538 E45C7A8E 6EC2300D 06092A86 4886F70D 01010405 00038181 00859353
+  F433003C F9083DBF 5495940F 712E2554 C6D75CB3 164C51E3 7B622F16 25A1E876
+  BDD2779F 925250AA A910D2CC B1B2BD3A 628C524D 002F15B8 D2AEAC74 782A4A93
+  D7442CD5 D7716091 A824BE7A 81D54B73 2C8E1417 30B7EC7A 80943B2A AD6E2178
+  21E5A0ED 3CF20C09 72B5EBAA 09A9511F 2E0C0C6B 2A8838E2 3D1F1755 8D
+  quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree etherchannel guard misconfig
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 2
+!
+vlan 4010
+ name IDR_OOB
+!
+!
+!
+!
+interface FastEthernet3/0/1
+ description IDR-NEU-MGMT *** Fa1/0/1 - MGMT Access to IDR-NEU-WNSW-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/2
+ description IDR-NEU-MGMT *** Fa1/0/2 - MGMT Access to IDR-NEU-WNSW-P02 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/3
+ description IDR-NEU-MGMT *** Fa1/0/3 - MGMT Access to IDR-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/4
+ description IDR-NEU-MGMT *** Fa1/0/4 - iLo Access to IDR-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/5
+ description IDR-NEU-MGMT *** Fa1/0/5 - MGMT Access to IDR-NEU-MRC-P01 - 1Gb ***
+ switchport access vlan 4010
+ switchport mode access
+!
+interface FastEthernet3/0/6
+!
+interface FastEthernet3/0/7
+!
+interface FastEthernet3/0/8
+!
+interface FastEthernet3/0/9
+!
+interface FastEthernet3/0/10
+!
+interface FastEthernet3/0/11
+!
+interface FastEthernet3/0/12
+!
+interface FastEthernet3/0/13
+!
+interface FastEthernet3/0/14
+!
+interface FastEthernet3/0/15
+!
+interface FastEthernet3/0/16
+!
+interface FastEthernet3/0/17
+!
+interface FastEthernet3/0/18
+!
+interface FastEthernet3/0/19
+!
+interface FastEthernet3/0/20
+!
+interface FastEthernet3/0/21
+!
+interface FastEthernet3/0/22
+!
+interface FastEthernet3/0/23
+!
+interface FastEthernet3/0/24
+!
+interface FastEthernet3/0/25
+!
+interface FastEthernet3/0/26
+!
+interface FastEthernet3/0/27
+!
+interface FastEthernet3/0/28
+!
+interface FastEthernet3/0/29
+!
+interface FastEthernet3/0/30
+!
+interface FastEthernet3/0/31
+!
+interface FastEthernet3/0/32
+!
+interface FastEthernet3/0/33
+!
+interface FastEthernet3/0/34
+!
+interface FastEthernet3/0/35
+!
+interface FastEthernet3/0/36
+!
+interface FastEthernet3/0/37
+!
+interface FastEthernet3/0/38
+!
+interface FastEthernet3/0/39
+!
+interface FastEthernet3/0/40
+!
+interface FastEthernet3/0/41
+!
+interface FastEthernet3/0/42
+!
+interface FastEthernet3/0/43
+!
+interface FastEthernet3/0/44
+!
+interface FastEthernet3/0/45
+!
+interface FastEthernet3/0/46
+!
+interface FastEthernet3/0/47
+!
+interface FastEthernet3/0/48
+!
+interface GigabitEthernet3/0/1
+ description IDR-NEU-MGMT *** IDR-OOB-WNSW-P01 Gi1/0/1 to NEU BB via Cogent VPLS - 1G ***
+ no switchport
+ ip address 10.245.0.76 255.255.255.192
+ speed nonegotiate
+!
+interface GigabitEthernet3/0/2
+!
+interface GigabitEthernet3/0/3
+!
+interface GigabitEthernet3/0/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan4010
+ description IDR_OOB
+ ip address 10.128.148.153 255.255.255.248
+!
+router bgp 64531
+ no synchronization
+ bgp router-id 10.245.0.76
+ bgp log-neighbor-changes
+ network 10.128.148.152 mask 255.255.255.248
+ neighbor 10.245.0.65 remote-as 64520
+ neighbor 10.245.0.65 transport path-mtu-discovery
+ neighbor 10.245.0.65 description eBGP to LD4-NEU-OOB-P01
+ neighbor 10.245.0.65 timers 6 20
+ neighbor 10.245.0.65 soft-reconfiguration inbound
+ no auto-summary
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.245.0.65
+ip http server
+ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ login authentication DALIO-AAA
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+end
+
+show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa3/0/6, Fa3/0/7, Fa3/0/8, Fa3/0/9, Fa3/0/10, Fa3/0/11, Fa3/0/12, Fa3/0/13, Fa3/0/14, Fa3/0/15, Fa3/0/16, Fa3/0/17, Fa3/0/18, Fa3/0/19, Fa3/0/20
+                                                Fa3/0/21, Fa3/0/22, Fa3/0/23, Fa3/0/24, Fa3/0/25, Fa3/0/26, Fa3/0/27, Fa3/0/28, Fa3/0/29, Fa3/0/30, Fa3/0/31, Fa3/0/32, Fa3/0/33, Fa3/0/34, Fa3/0/35
+                                                Fa3/0/36, Fa3/0/37, Fa3/0/38, Fa3/0/39, Fa3/0/40, Fa3/0/41, Fa3/0/42, Fa3/0/43, Fa3/0/44, Fa3/0/45, Fa3/0/46, Fa3/0/47, Fa3/0/48, Gi3/0/2, Gi3/0/3
+                                                Gi3/0/4
+2    VLAN0002                         active
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+4010 IDR_OOB                          active    Fa3/0/1, Fa3/0/2, Fa3/0/3, Fa3/0/4, Fa3/0/5

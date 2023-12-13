@@ -1,0 +1,458 @@
+!Command: show running-config
+!Running configuration last done at: Thu Nov 23 14:19:54 2023
+!Time: Fri Nov 24 04:00:39 2023
+
+version 10.1(2) Bios:version 07.69
+hostname TY3-NEU-WNSW-P01
+vdc TY3-NEU-WNSW-P01 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature bash-shell
+feature scp-server
+feature vrrp
+feature scheduler
+nv overlay evpn
+feature ospf
+feature bgp
+feature pim
+feature interface-vlan
+feature vn-segment-vlan-based
+feature lldp
+feature bfd
+clock protocol none vdc 1
+feature nv overlay
+
+role name unimus
+  rule 3 permit command show version
+  rule 2 permit command show running-config
+  rule 1 permit command show version
+no password strength-check
+username admin password 5 $5$VpW8lBwC$3UbYv0mPQnTwLPKRHcMrYg8A9y25I13fjLz2.cPlVV5  role network-admin
+ip domain-lookup
+ip name-server 10.128.148.251
+ip name-server 10.128.148.251 use-vrf management
+radius-server host 10.128.148.251 key 7 "w4AtffjRJOd.H2*wedoip.sPM" authentication accounting
+aaa group server radius DALIO
+    server 10.128.148.251
+    use-vrf management
+    source-interface mgmt0
+ip access-list acl-cm-cdw-ld4-ty3-500mb-in
+  10 permit ip any any
+ip access-list acl-snmp-rw-in
+  10 remark Allow Observium
+  20 permit ip 10.128.148.5/32 any
+  30 permit ip 10.128.149.12/32 any
+ip access-list acl-vty-in
+  10 permit ip 172.16.138.0/24 any
+  20 permit ip 172.16.139.0/24 any
+  30 permit ip 10.245.0.0/30 any
+  40 permit ip 10.246.0.0/30 any
+  50 permit ip 10.247.0.0/30 any
+  60 permit ip 10.248.0.0/30 any
+  70 permit ip 10.249.0.0/24 any
+  80 permit ip 10.128.148.0/24 any
+  90 permit ip 10.128.149.0/24 any
+  100 permit ip 10.112.134.192/27 any
+  110 permit ip 10.112.135.192/27 any
+  120 permit ip 10.212.136.192/27 any
+class-map type qos match-all cm-cdw-ty3-500mb-in
+  match access-group name acl-cm-cdw-ld4-ty3-500mb-in
+policy-map type qos pm-pol-ty3-cdw-in
+  class cm-cdw-ty3-500mb-in
+    police cir 500000000 bps bc 250000 bytes conform transmit violate drop
+copp profile strict
+bfd multihop interval 250 min_rx 250 multiplier 1
+snmp-server source-interface traps loopback1
+snmp-server user admin network-admin auth md5 0x950cd25bdfc03b91d4359e2ad47a8fc0 priv des 0x950cd25bdfc03b91d4359e2ad47a8fc0 localizedkey
+snmp-server host 10.128.148.5 traps version 2c N3utRA1!ty
+snmp-server host 10.128.149.12 traps version 2c N3utRA1!ty
+rmon event 1 description FATAL(1) owner PMON@FATAL
+rmon event 2 description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 description ERROR(3) owner PMON@ERROR
+rmon event 4 description WARNING(4) owner PMON@WARNING
+rmon event 5 description INFORMATION(5) owner PMON@INFO
+snmp-server enable traps callhome event-notify
+snmp-server enable traps callhome smtp-send-fail
+snmp-server enable traps cfs state-change-notif
+snmp-server enable traps lldp lldpRemTablesChange
+snmp-server enable traps cfs merge-failure
+snmp-server enable traps aaa server-state-change
+snmp-server enable traps feature-control FeatureOpStatusChange
+snmp-server enable traps sysmgr cseFailSwCoreNotifyExtended
+snmp-server enable traps config ccmCLIRunningConfigChanged
+snmp-server enable traps snmp authentication
+snmp-server enable traps link cisco-xcvr-mon-status-chg
+snmp-server enable traps vtp notifs
+snmp-server enable traps vtp vlancreate
+snmp-server enable traps vtp vlandelete
+snmp-server enable traps bridge newroot
+snmp-server enable traps bridge topologychange
+snmp-server enable traps stpx inconsistency
+snmp-server enable traps stpx root-inconsistency
+snmp-server enable traps stpx loop-inconsistency
+snmp-server enable traps system Clock-change-notification
+snmp-server enable traps feature-control ciscoFeatOpStatusChange
+snmp-server enable traps mmode cseNormalModeChangeNotify
+snmp-server enable traps mmode cseMaintModeChangeNotify
+snmp-server community N3utRA1!ty group network-admin
+snmp-server community N3utRA1!ty use-ipv4acl acl-snmp-rw-in
+aaa authentication login default group DALIO local
+aaa authentication login console group DALIO local
+system jumbomtu 9000
+
+ip pim rp-address 9.9.9.254 group-list 224.0.0.0/4
+ip pim ssm range 232.0.0.0/8
+vlan 1,10,800,2010
+vlan 10
+  name Server_Universal_Access
+vlan 800
+  name Credit_Agricole
+  vn-segment 30800
+  xconnect
+vlan 2010
+  name TY3-NEU-WNSW-P02
+
+no spanning-tree vlan 800
+ip prefix-list pl-bgp-neu-ty3-ld4-advertise seq 1 permit 172.16.138.186/32
+ip prefix-list pl-bgp-neu-ty3-ld4-advertise seq 2 permit 172.16.138.187/32
+ip prefix-list pl-bgp-neu-ty3-ld4-advertise seq 3 permit 172.16.138.188/32
+ip prefix-list pl-bgp-neu-ty3-ld4-advertise seq 4 permit 172.16.138.189/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 1 permit 172.16.138.184/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 2 permit 172.16.138.185/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 3 permit 10.247.0.0/30
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 4 permit 10.248.0.0/30
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 5 permit 10.112.135.192/27
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 6 permit 10.128.148.0/28
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 7 permit 172.16.138.190/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 8 permit 172.16.138.191/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 9 permit 10.124.55.152/29
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 10 permit 10.124.56.152/29
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 11 permit 172.16.138.198/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 12 permit 172.16.138.199/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 13 permit 172.16.138.200/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 14 permit 172.16.138.201/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 15 permit 172.16.138.202/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 16 permit 172.16.138.203/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 17 permit 172.16.138.204/32
+ip prefix-list pl-bgp-neu-ty3-ld4-receive seq 18 permit 172.16.138.205/32
+ip prefix-list pl-loopback-only seq 10 permit 0.0.0.0/0 eq 32
+route-map rm-bgp-neu-ty3-ld4-pri-advertise permit 10
+  match ip address prefix-list pl-bgp-neu-ty3-ld4-advertise
+route-map rm-bgp-neu-ty3-ld4-pri-receive permit 10
+  match ip address prefix-list pl-bgp-neu-ty3-ld4-receive
+route-map rm-bgp-neu-ty3-ny4-pri-receive permit 10
+route-map rm-loopback-routes permit 10
+  match ip address prefix-list pl-loopback-only
+route-map rm-nexthop-unchanged permit 10
+  set ip next-hop unchanged
+vrf context management
+  ip route 0.0.0.0/0 10.128.148.121
+
+
+interface Vlan1
+
+interface Vlan10
+  description NEU_SRV_UA
+  no shutdown
+  ip address 10.128.149.58/29
+  vrrp 1
+    priority 105
+    authentication text VL_10
+    address 10.128.149.57
+    no shutdown
+
+interface Vlan2010
+  description TY3-NEU-XC *** Et1/6 - TY3-NEU-WNSW-P02 Et1/6 - 100Gb ***
+  no shutdown
+  mtu 9000
+  ip address 172.16.139.201/30
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface port-channel1
+  description TY3-ETHC *** Po1 - TY3-NEU-WNSW-P02 Po1 ***
+  switchport
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback100
+  member vni 30800
+    mcast-group 239.1.1.80
+
+interface Ethernet1/1
+  description TY3-NEU-XC *** Et1/1 - LD4-NEU-WNSW-P01 Et1/1 - 1Gb ***
+  mtu 9000
+  ip address 10.249.0.6/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/2
+
+interface Ethernet1/3
+  no shutdown
+
+interface Ethernet1/4
+  no shutdown
+
+interface Ethernet1/5
+  description NEU-XC *** Et1/5 - TY3-NEU-SRV-01 10G1 - 10Gb ***
+  switchport
+  switchport access vlan 10
+  no shutdown
+
+interface Ethernet1/6
+  description NEU-XC *** Et1/6 - TY3-NEU-WNSW-P02 Et1/6 - 10Gb ***
+  switchport
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  channel-group 1
+  no shutdown
+
+interface Ethernet1/7
+  description NEU-XC *** Et1/7 - TY3-NEU-WNSW-P02 Et1/7 - 10Gb ***
+  switchport
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  channel-group 1
+  no shutdown
+
+interface Ethernet1/8
+  no shutdown
+
+interface Ethernet1/9
+  no shutdown
+
+interface Ethernet1/10
+  no shutdown
+
+interface Ethernet1/11
+  no shutdown
+
+interface Ethernet1/12
+  no shutdown
+
+interface Ethernet1/13
+  no shutdown
+
+interface Ethernet1/14
+  no shutdown
+
+interface Ethernet1/15
+  no shutdown
+
+interface Ethernet1/16
+  no shutdown
+
+interface Ethernet1/17
+  no shutdown
+
+interface Ethernet1/18
+  no shutdown
+
+interface Ethernet1/19
+  no shutdown
+
+interface Ethernet1/20
+  no shutdown
+
+interface Ethernet1/21
+  no shutdown
+
+interface Ethernet1/22
+  no shutdown
+
+interface Ethernet1/23
+  no shutdown
+
+interface Ethernet1/24
+  no shutdown
+
+interface Ethernet1/25
+  no shutdown
+
+interface Ethernet1/26
+  no shutdown
+
+interface Ethernet1/27
+  no shutdown
+
+interface Ethernet1/28
+  no shutdown
+
+interface Ethernet1/29
+  no shutdown
+
+interface Ethernet1/30
+  no shutdown
+
+interface Ethernet1/31
+  no shutdown
+
+interface Ethernet1/32
+  no shutdown
+
+interface Ethernet1/33
+  no shutdown
+
+interface Ethernet1/34
+  no shutdown
+
+interface Ethernet1/35
+  no shutdown
+
+interface Ethernet1/36
+  no shutdown
+
+interface Ethernet1/37
+  no shutdown
+
+interface Ethernet1/38
+  no shutdown
+
+interface Ethernet1/39
+  no shutdown
+
+interface Ethernet1/40
+  no shutdown
+
+interface Ethernet1/41
+  no shutdown
+
+interface Ethernet1/42
+  no shutdown
+
+interface Ethernet1/43
+  no shutdown
+
+interface Ethernet1/44
+  no shutdown
+
+interface Ethernet1/45
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+  no shutdown
+
+interface Ethernet1/48
+  description TY3-CLI-XC *** Et1/48 - NSID001022 - Credit Agricole *** - 500MB
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 800
+  spanning-tree bpdufilter enable
+  mtu 9000
+  service-policy type qos input pm-pol-ty3-cdw-in
+  no shutdown
+
+interface Ethernet1/49
+  no shutdown
+
+interface Ethernet1/50
+  no shutdown
+
+interface Ethernet1/51
+  no shutdown
+
+interface Ethernet1/52
+  no shutdown
+
+interface Ethernet1/53
+
+interface Ethernet1/54
+
+interface mgmt0
+  vrf member management
+  ip address 10.128.148.122/29
+
+interface loopback1
+  description NEU-MGMT *** TY3 Lo1 Management ***
+  ip address 172.16.138.186/32
+  ip ospf network point-to-point
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface loopback100
+  description VTEP-IP
+  ip address 1.1.1.186/32
+  ip pim sparse-mode
+line console
+line vty
+  access-class acl-vty-in in
+boot nxos bootflash:/nxos.10.1.2.bin
+router ospf 10
+  router-id 172.16.138.186
+  network 172.16.0.186/32 area 0.0.0.0
+  network 172.16.139.200/30 area 0.0.0.0
+  log-adjacency-changes
+  max-lsa 12000
+  passive-interface default
+router bgp 65512
+  router-id 172.16.138.186
+  log-neighbor-changes
+  address-family ipv4 unicast
+    network 10.128.149.56/29
+    redistribute direct route-map rm-loopback-routes
+  address-family l2vpn evpn
+  neighbor 10.249.0.5
+    remote-as 65510
+    description eBGP to LD4-NEU-WNSW-P01
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+  neighbor 172.16.138.184
+    remote-as 65510
+    description EVPN to LD4-NEU-WNSW-P01
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.139.202
+    remote-as 65513
+    description Neutrality eBGP to TY3-NEU-WNSW-P02
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+evpn
+  vni 30800 l2
+    rd 30800:65512
+    route-target import 30800:800
+    route-target export 30800:800
+
+logging server 10.128.148.5 6
+logging server 10.128.149.12 6
+logging source-interface loopback1
+
+
+
+
+show vlan brief
+
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+10   Server_Universal_Access          active    Po1, Eth1/5, Eth1/6, Eth1/7
+800  Credit_Agricole                  active    Eth1/48
+2010 TY3-NEU-WNSW-P02                 active    Po1, Eth1/6, Eth1/7
