@@ -1,0 +1,613 @@
+!Command: show running-config
+!No configuration change since last restart
+!Time: Wed Dec 13 03:00:12 2023
+
+version 10.1(2) Bios:version 07.66
+hostname ARU-NEU-WNSW-P02
+vdc ARU-NEU-WNSW-P02 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature vrrp
+feature scheduler
+nv overlay evpn
+feature ospf
+feature bgp
+feature pim
+feature interface-vlan
+feature vn-segment-vlan-based
+feature lldp
+feature bfd
+clock protocol none vdc 1
+feature nv overlay
+
+no password strength-check
+username admin password 5 $5$EFGFDP$KcGPLYGAUdSUDoI9rWD3WV1vmqFF5UQ3yXk5FR7lO23  role network-admin
+username tonyk password 5 $5$DMELFB$wuy0zm0mpAWE.2GflcsogoBOskcOe6dm1SCGBqr151/  role priv-14
+username tonyk passphrase  lifetime 99999 warntime 14 gracetime 3
+username dominicw password 5 $5$DACGNK$9/yA.qGgd3NeeZy2SeFoxlsuN5Ky2JsCY6JrOcu3LdB  role priv-14
+username dominicw passphrase  lifetime 99999 warntime 14 gracetime 3
+username unimus password 5 $5$PDFDIF$G2fS.yMcHZcES9gsX0Sk.eYHaXYTv78MUFiIZMDgdl.  role network-admin
+username unimus passphrase  lifetime 99999 warntime 14 gracetime 3
+username ptroncy password 5 $5$LAKDGD$FqDiC6/BOeTgebrGK7ohFhVA/NFha24KccMsjNv1Rv6  role priv-14
+username ptroncy passphrase  lifetime 99999 warntime 14 gracetime 3
+username kynguyen password 5 $5$EDJJCJ$AndZ99cvbf1TyIqLoT87kMpHBi3I0NQm0bhVCzL3EF1  role priv-14
+username kynguyen passphrase  lifetime 99999 warntime 14 gracetime 3
+username splant password 5 $5$IPFLJA$e9mzjzxlqseeoNhmAi63/dVHNKDrVfaPR5jZyCrZzi8  role priv-14
+username splant passphrase  lifetime 99999 warntime 14 gracetime 3
+username khodabaksho password 5 $5$FDHJBD$Juvp2cNhPPkq0clhaRd/aWhO90zZikacVFrhaMoyfe6  role priv-14
+username khodabaksho passphrase  lifetime 99999 warntime 14 gracetime 3
+username port_up password 5 $5$DIOJLO$aL/ra6YDoOTpi1hhrLZCX3lHCmOg4zny7ofl1U87IHD  role network-admin
+username port_up passphrase  lifetime 99999 warntime 14 gracetime 3
+username slavchev99 password 5 $5$KACICK$1g54EKmJ5znwTf5nCdYc.hLKN6GQsIenwAnWriR6ekC  role priv-14
+username slavchev99 passphrase  lifetime 99999 warntime 14 gracetime 3
+ip domain-lookup
+ip name-server 10.128.148.251
+ip name-server 10.128.148.251 use-vrf management
+ip access-list acl-snmp-rw-in
+  statistics per-entry
+  10 remark Allow Observium
+  20 permit ip 10.128.148.5/32 any
+  30 permit ip 10.128.149.12/32 any
+ip access-list acl-vty-in
+  10 permit ip 172.16.138.0/24 any
+  20 permit ip 172.16.139.0/24 any
+  30 permit ip 10.245.0.0/30 any
+  40 permit ip 10.246.0.0/30 any
+  50 permit ip 10.247.0.0/30 any
+  60 permit ip 10.248.0.0/30 any
+  70 permit ip 10.249.0.0/24 any
+  80 permit ip 10.128.148.0/24 any
+  90 permit ip 10.128.149.0/24 any
+  100 permit ip 10.112.134.192/27 any
+  110 permit ip 10.112.135.192/27 any
+  120 permit ip 10.212.136.192/27 any
+copp profile strict
+bfd multihop interval 250 min_rx 250 multiplier 1
+snmp-server source-interface traps loopback1
+snmp-server user admin network-admin auth md5 0xec6e50c6606155a774a54bfe3ec191e2 priv aes-128 0xec6e50c6606155a774a54bfe3ec191e2 localizedkey
+snmp-server user tonyk priv-14 auth md5 0xfe310daf30208ac5e51e23bb2c92058b priv aes-128 0xfe310daf30208ac5e51e23bb2c92058b localizedkey
+snmp-server user splant priv-14 auth md5 0xa46e42f343f1e1885d96118ade56381f priv aes-128 0xa46e42f343f1e1885d96118ade56381f localizedkey
+snmp-server user unimus network-admin auth md5 0xfe310daf30208ac5e51e23bb2c92058b priv aes-128 0xfe310daf30208ac5e51e23bb2c92058b localizedkey
+snmp-server user port_up network-admin auth md5 0x779f296c064c1052ab34c5a6109f927d priv aes-128 0x779f296c064c1052ab34c5a6109f927d localizedkey
+snmp-server user ptroncy priv-14 auth md5 0xdd83080e1ec6a0f55bdefe2950893fa6 priv aes-128 0xdd83080e1ec6a0f55bdefe2950893fa6 localizedkey
+snmp-server user dominicw priv-14 auth md5 0xfe310daf30208ac5e51e23bb2c92058b priv aes-128 0xfe310daf30208ac5e51e23bb2c92058b localizedkey
+snmp-server user kynguyen priv-14 auth md5 0xdbbb656ef02841e2616900b38da0c70b priv aes-128 0xdbbb656ef02841e2616900b38da0c70b localizedkey
+snmp-server user slavchev99 priv-14 auth md5 0x029798fba3dc9b9b3e54f16a4e7f4358 priv aes-128 0x029798fba3dc9b9b3e54f16a4e7f4358 localizedkey
+snmp-server user khodabaksho priv-14 auth md5 0xc053adc7ee7fe08b19ea5fc0549868d0 priv aes-128 0xc053adc7ee7fe08b19ea5fc0549868d0 localizedkey
+snmp-server host 10.128.148.5 traps version 2c N3utRA1!ty
+snmp-server host 10.128.149.12 traps version 2c N3utRA1!ty
+rmon event 1 description FATAL(1) owner PMON@FATAL
+rmon event 2 description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 description ERROR(3) owner PMON@ERROR
+rmon event 4 description WARNING(4) owner PMON@WARNING
+rmon event 5 description INFORMATION(5) owner PMON@INFO
+snmp-server enable traps callhome event-notify
+snmp-server enable traps callhome smtp-send-fail
+snmp-server enable traps cfs state-change-notif
+snmp-server enable traps lldp lldpRemTablesChange
+snmp-server enable traps cfs merge-failure
+snmp-server enable traps aaa server-state-change
+snmp-server enable traps feature-control FeatureOpStatusChange
+snmp-server enable traps sysmgr cseFailSwCoreNotifyExtended
+snmp-server enable traps config ccmCLIRunningConfigChanged
+snmp-server enable traps snmp authentication
+snmp-server enable traps link cisco-xcvr-mon-status-chg
+snmp-server enable traps vtp notifs
+snmp-server enable traps vtp vlancreate
+snmp-server enable traps vtp vlandelete
+snmp-server enable traps bridge newroot
+snmp-server enable traps bridge topologychange
+snmp-server enable traps stpx inconsistency
+snmp-server enable traps stpx root-inconsistency
+snmp-server enable traps stpx loop-inconsistency
+snmp-server enable traps system Clock-change-notification
+snmp-server enable traps feature-control ciscoFeatOpStatusChange
+snmp-server enable traps mmode cseNormalModeChangeNotify
+snmp-server enable traps mmode cseMaintModeChangeNotify
+snmp-server enable traps syslog message-generated
+snmp-server community N3utRA1!ty group network-admin
+snmp-server community N3utRA1!ty use-ipv4acl acl-snmp-rw-in
+system jumbomtu 9000
+
+ip pim rp-address 9.9.9.254 group-list 224.0.0.0/4
+ip pim ssm range 232.0.0.0/8
+vlan 1,10,118-119,300,600,1700,2000,2010,2100,2500
+vlan 10
+  name Server_Universal_Access
+vlan 118
+  name Ora_Trading_FR2_to_ARU
+  vn-segment 30118
+  xconnect
+vlan 119
+  name SocGen_BT_to_Aruba
+  vn-segment 30119
+  xconnect
+vlan 300
+  name ORA
+  vn-segment 30300
+  xconnect
+vlan 600
+  name Flow_Traders
+  vn-segment 30600
+  xconnect
+vlan 1700
+  name All_Derivatives
+  vn-segment 301700
+  xconnect
+vlan 2000
+  name SSW
+  vn-segment 302000
+  xconnect
+vlan 2010
+  name ARU-NEU-WNSW-P01
+vlan 2100
+  name Headlands_FR2_to_ARU
+  vn-segment 302100
+  xconnect
+vlan 2500
+  name Coral_Reef
+  vn-segment 302500
+  xconnect
+
+no spanning-tree vlan 118-119,300,1400,1700,2000,2100,2200
+ip prefix-list pl-fr2-aru-preferred seq 1 permit 172.16.138.192/32
+ip prefix-list pl-fr2-aru-preferred seq 2 permit 1.1.1.192/32
+ip prefix-list pl-fr2-aru-preferred seq 3 permit 9.9.9.254/32
+ip prefix-list pl-loopback-only seq 10 permit 0.0.0.0/0 eq 32
+route-map rm-fr2-aru-preferred permit 10
+  match ip address prefix-list pl-fr2-aru-preferred
+  set local-preference 500
+route-map rm-loopback-routes permit 10
+  match ip address prefix-list pl-loopback-only
+route-map rm-nexthop-unchanged permit 10
+  set ip next-hop unchanged
+vrf context management
+  ip route 0.0.0.0/0 10.128.148.185
+
+
+interface Vlan1
+
+interface Vlan10
+  description NEU_SRV_UA
+  no shutdown
+  ip address 10.128.149.43/29
+  vrrp 1
+    authentication text VL_10
+    address 10.128.149.41
+    no shutdown
+
+interface Vlan2010
+  description ARU-NEU-XC *** Et1/54 - ARU-NEU-WNSW-P01 Et1/54 - 100Gb ***
+  no shutdown
+  mtu 9000
+  ip address 172.16.139.18/30
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback100
+  member vni 30118
+    mcast-group 239.1.1.9
+  member vni 30119
+    mcast-group 239.1.1.11
+  member vni 30300
+    mcast-group 239.1.1.30
+  member vni 30600
+    mcast-group 239.1.1.60
+  member vni 301700
+    mcast-group 239.1.1.170
+  member vni 302000
+    mcast-group 239.1.1.200
+  member vni 302100
+    mcast-group 239.1.1.210
+  member vni 302500
+    mcast-group 239.1.1.250
+
+interface Ethernet1/1
+  no shutdown
+
+interface Ethernet1/2
+  no shutdown
+
+interface Ethernet1/3
+  no shutdown
+
+interface Ethernet1/4
+  no shutdown
+
+interface Ethernet1/5
+  no shutdown
+
+interface Ethernet1/6
+  description NEU-XC *** Et1/6 - ARU-NEU-SRV-01 10G2 - 10Gb ***
+  switchport
+  switchport access vlan 10
+  no shutdown
+
+interface Ethernet1/7
+  no shutdown
+
+interface Ethernet1/8
+  no shutdown
+
+interface Ethernet1/9
+  no shutdown
+
+interface Ethernet1/10
+  no shutdown
+
+interface Ethernet1/11
+  description ARU-CLI-XC *** Et1/11 - NSID001311 - ORA - 10Gb ***
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 300
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/12
+  no shutdown
+
+interface Ethernet1/13
+  description ARU-NEU-XC *** Et1/13 - NSID001454 - FR2-NEU-WNSW-P02 Et1/13 - 10Gb ***
+  mtu 9000
+  ip address 10.249.0.106/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/14
+  no shutdown
+
+interface Ethernet1/15
+  no shutdown
+
+interface Ethernet1/16
+  no shutdown
+
+interface Ethernet1/17
+  no shutdown
+
+interface Ethernet1/18
+  no shutdown
+
+interface Ethernet1/19
+  no shutdown
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+  no shutdown
+
+interface Ethernet1/22
+  no shutdown
+
+interface Ethernet1/23
+  no shutdown
+
+interface Ethernet1/24
+  no shutdown
+
+interface Ethernet1/25
+  no shutdown
+
+interface Ethernet1/26
+  no shutdown
+
+interface Ethernet1/27
+  no shutdown
+
+interface Ethernet1/28
+  no shutdown
+
+interface Ethernet1/29
+  no shutdown
+
+interface Ethernet1/30
+  no shutdown
+
+interface Ethernet1/31
+  no shutdown
+
+interface Ethernet1/32
+  no shutdown
+
+interface Ethernet1/33
+  no shutdown
+
+interface Ethernet1/34
+  no shutdown
+
+interface Ethernet1/35
+  no shutdown
+
+interface Ethernet1/36
+  no shutdown
+
+interface Ethernet1/37
+  no shutdown
+
+interface Ethernet1/38
+  no shutdown
+
+interface Ethernet1/39
+  description reserved for Ora Trading NSID001514
+  no shutdown
+
+interface Ethernet1/40
+  description ARU-NEU-XC *** Et1/40 - NSID001515 - SocGen *** - 10G
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 119
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/41
+  description ARU-NEU-XC *** Et1/41 - NSID001514 - Ora Trading *** - 10G
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 118
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/42
+  description ARU-CLI-XC *** Et1/42 - NSID001482 - Headlands *** - 10G
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 2100
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/43
+  description ARU-CLI-XC *** Et1/43 - NSID001361 - Coral Reef - 10G ***
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 2500
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/44
+  description ARU-CLI-XC *** Et1/44 - NSID001343 - SSW - 10Gb ***
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 2000
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/45
+  description ARU-CLI-XC *** Et1/45 - NSID001330 - All Derivatives - 10Gb
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 1700
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/46
+  description ARU-CLI-XC *** Et1/46 - NSID001353 - Flow Traders - 10G ***
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 600
+  spanning-tree bpdufilter enable
+  mtu 9000
+  speed 10000
+  no shutdown
+
+interface Ethernet1/47
+
+interface Ethernet1/48
+  no shutdown
+
+interface Ethernet1/49
+  no shutdown
+
+interface Ethernet1/50
+  no shutdown
+
+interface Ethernet1/51
+  no shutdown
+
+interface Ethernet1/52
+  no shutdown
+
+interface Ethernet1/53
+  description ARU-NEU-XC *** Et1/53 - NSID001299 - MIL2-NEU-WNSW-P02 Et1/53 - 100Gb ***
+  mtu 9000
+  speed 100000
+  no negotiate auto
+  ip address 10.249.0.69/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/54
+  description NEU-XC *** Et1/54 - ARU-NEU-WNSW-P02 Et1/54 - 100Gb ***
+  switchport
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  no shutdown
+
+interface mgmt0
+  vrf member management
+  ip address 10.128.148.186/29
+
+interface loopback1
+  description NEU-MGMT *** ARU Lo1 Management ***
+  ip address 172.16.138.199/32
+  ip ospf network point-to-point
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface loopback100
+  description VTEP-IP
+  ip address 1.1.1.199/32
+  ip pim sparse-mode
+line console
+line vty
+  access-class acl-vty-in in
+boot nxos bootflash:/nxos.10.1.2.bin
+router ospf 10
+  router-id 172.16.138.199
+  log-adjacency-changes
+  max-lsa 12000
+  passive-interface default
+router bgp 65525
+  router-id 172.16.138.199
+  log-neighbor-changes
+  address-family ipv4 unicast
+    network 10.128.149.40/29
+    redistribute direct route-map rm-loopback-routes
+  address-family l2vpn evpn
+  neighbor 10.249.0.70
+    bfd
+    remote-as 65529
+    description eBGP to MIL2-NEU-WNSW-P02
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+  neighbor 10.249.0.105
+    remote-as 65517
+    description eBGP to FR2-NEU-WNSW-P02
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      route-map rm-fr2-aru-preferred in
+      soft-reconfiguration inbound always
+  neighbor 172.16.138.185
+    bfd
+    remote-as 65511
+    description EVPN to LD4-NEU-WNSW-P02
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.138.191
+    bfd
+    remote-as 65518
+    description EVPN to LBL-NEU-WNSW-P01
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.138.192
+    remote-as 65517
+    description EVPN to FR2-NEU-WNSW-P02
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.138.205
+    bfd
+    remote-as 65530
+    description EVPN to BT-NEU-WNSW-P01
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.139.17
+    bfd
+    remote-as 65524
+    description eBGP to ARU-NEU-WNSW-P01
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+evpn
+  vni 30118 l2
+    rd 30118:65525
+    route-target import 30118:118
+    route-target export 30118:118
+  vni 30119 l2
+    rd 30119:65525
+    route-target import 30119:119
+    route-target export 30119:119
+  vni 30300 l2
+    rd 30300:65525
+    route-target import 30300:300
+    route-target export 30300:300
+  vni 30600 l2
+    rd 30600:65525
+    route-target import 30600:600
+    route-target export 30600:600
+  vni 301700 l2
+    rd 301700:65525
+    route-target import 301700:1700
+    route-target export 301700:1700
+  vni 302000 l2
+    rd 302000:65525
+    route-target import 302000:2000
+    route-target export 302000:2000
+  vni 302100 l2
+    rd 302100:65525
+    route-target import 302100:2100
+    route-target export 302100:2100
+  vni 302500 l2
+    rd 302500:65525
+    route-target import 302500:2500
+    route-target export 302500:2500
+
+logging server 10.128.148.5 6
+logging server 10.128.149.12 6
+logging source-interface loopback1
+
+
+
+
+
+show vlan brief
+
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+10   Server_Universal_Access          active    Eth1/6, Eth1/54
+118  Ora_Trading_FR2_to_ARU           active    Eth1/41
+119  SocGen_BT_to_Aruba               active    Eth1/40
+300  ORA                              active    Eth1/11
+600  Flow_Traders                     active    Eth1/46
+1700 All_Derivatives                  active    Eth1/45
+2000 SSW                              active    Eth1/44
+2010 ARU-NEU-WNSW-P01                 active    Eth1/54
+2100 Headlands_FR2_to_ARU             active    Eth1/42
+2500 Coral_Reef                       active    Eth1/43

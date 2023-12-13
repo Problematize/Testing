@@ -1,0 +1,467 @@
+!Command: show running-config
+!No configuration change since last restart
+!Time: Wed Dec 13 03:00:12 2023
+
+version 10.1(2) Bios:version 07.66
+hostname BT-NEU-WNSW-P02
+vdc BT-NEU-WNSW-P02 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature vrrp
+feature scheduler
+nv overlay evpn
+feature ospf
+feature bgp
+feature pim
+feature interface-vlan
+feature vn-segment-vlan-based
+feature lldp
+feature bfd
+clock protocol none vdc 1
+feature nv overlay
+
+no password strength-check
+username admin password 5 $5$POPDKK$B9W15Ff0brCkRJgiykSnHb6OEwx3HJ6s/VIca7rjeY1  role network-admin
+ip domain-lookup
+ip name-server 10.128.148.251
+ip name-server 10.128.148.251 use-vrf management
+radius-server host 10.128.148.251 key 7 "w4AtffjRJOd.H2*wedoip.sPM" authentication accounting
+aaa group server radius DALIO
+    server 10.128.148.251
+    use-vrf management
+    source-interface mgmt0
+ip access-list acl-snmp-rw-in
+  statistics per-entry
+  10 remark Allow Observium
+  20 permit ip 10.128.148.5/32 any
+  30 permit ip 10.128.149.12/32 any
+ip access-list acl-vty-in
+  10 permit ip 172.16.138.0/24 any
+  20 permit ip 172.16.139.0/24 any
+  30 permit ip 10.245.0.0/30 any
+  40 permit ip 10.246.0.0/30 any
+  50 permit ip 10.247.0.0/30 any
+  60 permit ip 10.248.0.0/30 any
+  70 permit ip 10.249.0.0/24 any
+  80 permit ip 10.128.148.0/24 any
+  90 permit ip 10.128.149.0/24 any
+  100 permit ip 10.112.134.192/27 any
+  110 permit ip 10.112.135.192/27 any
+  120 permit ip 10.212.136.192/27 any
+copp profile strict
+bfd multihop interval 250 min_rx 250 multiplier 1
+snmp-server source-interface traps loopback1
+snmp-server user admin network-admin auth md5 0xbf3b33b27c6b60d1d5a93850c3b184e2 priv aes-128 0xbf3b33b27c6b60d1d5a93850c3b184e2 localizedkey
+snmp-server host 10.128.148.5 traps version 2c N3utRA1!ty
+snmp-server host 10.128.149.12 traps version 2c N3utRA1!ty
+rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+snmp-server enable traps callhome event-notify
+snmp-server enable traps callhome smtp-send-fail
+snmp-server enable traps cfs state-change-notif
+snmp-server enable traps lldp lldpRemTablesChange
+snmp-server enable traps cfs merge-failure
+snmp-server enable traps aaa server-state-change
+snmp-server enable traps feature-control FeatureOpStatusChange
+snmp-server enable traps sysmgr cseFailSwCoreNotifyExtended
+snmp-server enable traps config ccmCLIRunningConfigChanged
+snmp-server enable traps snmp authentication
+snmp-server enable traps link cisco-xcvr-mon-status-chg
+snmp-server enable traps vtp notifs
+snmp-server enable traps vtp vlancreate
+snmp-server enable traps vtp vlandelete
+snmp-server enable traps bridge newroot
+snmp-server enable traps bridge topologychange
+snmp-server enable traps stpx inconsistency
+snmp-server enable traps stpx root-inconsistency
+snmp-server enable traps stpx loop-inconsistency
+snmp-server enable traps system Clock-change-notification
+snmp-server enable traps feature-control ciscoFeatOpStatusChange
+snmp-server enable traps mmode cseNormalModeChangeNotify
+snmp-server enable traps mmode cseMaintModeChangeNotify
+snmp-server enable traps syslog message-generated
+snmp-server community N3utRA1!ty group network-admin
+snmp-server community N3utRA1!ty use-ipv4acl acl-snmp-rw-in
+aaa authentication login default group DALIO local
+aaa authentication login console group DALIO local
+system jumbomtu 9000
+
+ip pim rp-address 9.9.9.254 group-list 224.0.0.0/4
+ip pim ssm range 232.0.0.0/8
+vlan 1,10,100,111,700,2010,2400
+vlan 10
+  name Server_Universal_Access
+vlan 100
+  name DRW
+  vn-segment 30100
+  xconnect
+vlan 111
+  name Squarepoint_BT_to_ARU
+  vn-segment 30111
+  xconnect
+vlan 700
+  name Virtu
+  vn-segment 30700
+  xconnect
+vlan 2010
+  name BT-NEU-WNSW-P01
+vlan 2400
+  name Coral_Reef
+  vn-segment 302400
+  xconnect
+
+no spanning-tree vlan 100,111
+ip prefix-list pl-loopback-only seq 10 permit 0.0.0.0/0 eq 32
+route-map rm-loopback-routes permit 10
+  match ip address prefix-list pl-loopback-only
+route-map rm-nexthop-unchanged permit 10
+  set ip next-hop unchanged
+vrf context management
+  ip route 0.0.0.0/0 10.128.148.145
+
+
+interface Vlan1
+
+interface Vlan10
+  description NEU_SRV_UA
+  no shutdown
+  ip address 10.128.149.75/29
+  vrrp 1
+    authentication text VL_10
+    address 10.128.149.73
+    no shutdown
+
+interface Vlan2010
+  description BT-NEU-XC *** Et1/54 - BT-NEU-WNSW-P01 Et1/54 - 100Gb ***
+  no shutdown
+  mtu 9000
+  ip address 172.16.140.30/30
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback100
+  member vni 30100
+    mcast-group 239.1.1.10
+  member vni 30111
+    mcast-group 239.1.1.2
+  member vni 30700
+    mcast-group 239.1.1.70
+  member vni 302400
+    mcast-group 239.1.1.240
+
+interface Ethernet1/1
+  description BT-CLI-XC *** Et1/1 - NSID001263/NSID001305 - DRW - 10G ***
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 100
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/2
+
+interface Ethernet1/3
+
+interface Ethernet1/4
+
+interface Ethernet1/5
+
+interface Ethernet1/6
+  description NEU-XC *** Et1/6 - BT-NEU-SRV-01 10G2 - 10Gb ***
+  switchport
+  switchport access vlan 10
+  no shutdown
+
+interface Ethernet1/7
+  no shutdown
+
+interface Ethernet1/8
+  no shutdown
+
+interface Ethernet1/9
+  no shutdown
+
+interface Ethernet1/10
+  no shutdown
+
+interface Ethernet1/11
+  no shutdown
+
+interface Ethernet1/12
+  no shutdown
+
+interface Ethernet1/13
+  no shutdown
+
+interface Ethernet1/14
+  no shutdown
+
+interface Ethernet1/15
+  no shutdown
+
+interface Ethernet1/16
+  no shutdown
+
+interface Ethernet1/17
+  no shutdown
+
+interface Ethernet1/18
+  no shutdown
+
+interface Ethernet1/19
+  no shutdown
+
+interface Ethernet1/20
+  no shutdown
+
+interface Ethernet1/21
+  no shutdown
+
+interface Ethernet1/22
+  no shutdown
+
+interface Ethernet1/23
+  no shutdown
+
+interface Ethernet1/24
+  no shutdown
+
+interface Ethernet1/25
+  no shutdown
+
+interface Ethernet1/26
+  no shutdown
+
+interface Ethernet1/27
+  no shutdown
+
+interface Ethernet1/28
+  no shutdown
+
+interface Ethernet1/29
+  no shutdown
+
+interface Ethernet1/30
+  no shutdown
+
+interface Ethernet1/31
+  no shutdown
+
+interface Ethernet1/32
+  no shutdown
+
+interface Ethernet1/33
+  no shutdown
+
+interface Ethernet1/34
+  no shutdown
+
+interface Ethernet1/35
+  no shutdown
+
+interface Ethernet1/36
+  no shutdown
+
+interface Ethernet1/37
+  no shutdown
+
+interface Ethernet1/38
+  no shutdown
+
+interface Ethernet1/39
+  no shutdown
+
+interface Ethernet1/40
+  no shutdown
+
+interface Ethernet1/41
+  description BT-CLI-XC *** Et1/41 - NSID001471 - Squarepoint *** - 10G
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 111
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/42
+  description BT-CLI-XC *** Et1/42 - NSID001354 - Coral Reef - 10G ***
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 2400
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/43
+  no shutdown
+
+interface Ethernet1/44
+  no shutdown
+
+interface Ethernet1/45
+  no shutdown
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+  description BT-CLI-XC *** Et1/47 - NSID001320 - Virtu Financial - 10G **
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 700
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/48
+
+interface Ethernet1/49
+
+interface Ethernet1/50
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+
+interface Ethernet1/53
+  description BT-NEU-XC *** Et1/53 - NSID001293 - IDR-NEU-WNSW-P02 Et1/53 - 100Gb ***
+  mtu 9000
+  speed 100000
+  no negotiate auto
+  ip address 10.249.0.74/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/54
+  description NEU-XC *** Et1/54 - BT-NEU-WNSW-P01 Et1/54 - 100Gb ***
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  no shutdown
+
+interface mgmt0
+  vrf member management
+  ip address 10.128.148.147/29
+
+interface loopback1
+  description NEU-MGMT *** IDR Lo1 Management ***
+  ip address 172.16.138.204/32
+  ip ospf network point-to-point
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface loopback100
+  description VTEP-IP
+  ip address 1.1.1.204/32
+  ip pim sparse-mode
+icam monitor scale
+
+line console
+line vty
+  access-class acl-vty-in in
+boot nxos bootflash:/nxos.10.1.2.bin
+router ospf 10
+  router-id 172.16.138.204
+  log-adjacency-changes
+  max-lsa 12000
+  passive-interface default
+router bgp 65531
+  router-id 172.16.138.204
+  log-neighbor-changes
+  address-family ipv4 unicast
+    network 10.128.149.72/29
+    redistribute direct route-map rm-loopback-routes
+  address-family l2vpn evpn
+  neighbor 10.249.0.73
+    bfd
+    remote-as 65527
+    description eBGP to IDR
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+  neighbor 172.16.138.198
+    bfd
+    remote-as 65524
+    description EVPN to ARU-NEU-WNSW-P01
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.140.29
+    bfd
+    remote-as 65530
+    description eBGP to BT-NEU-WNSW-P01
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+evpn
+  vni 30100 l2
+    rd 30100:65531
+    route-target import 30100:100
+    route-target export 30100:100
+  vni 30111 l2
+    rd 30111:65531
+    route-target import 30111:111
+    route-target export 30111:111
+  vni 30700 l2
+    rd 30700:65531
+    route-target import 30700:700
+    route-target export 30700:700
+  vni 302400 l2
+    rd 302400:65531
+    route-target import 302400:2400
+    route-target export 302400:2400
+event manager applet BT_IDR_ARU_Down
+  event syslog occurs 1 pattern "%BFD-5-SESSION_REMOVED: BFD session to neighbor 172.16.138.198"
+  action 1.0 cli conf t
+  action 2.0 cli interface ethernet1/41-42
+  action 3.0 cli shutdown
+
+logging server 10.128.148.5 6
+logging server 10.128.149.12 6
+logging source-interface loopback1
+no logging monitor
+
+
+
+
+show vlan brief
+
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+10   Server_Universal_Access          active    Eth1/6, Eth1/54
+100  DRW                              active    Eth1/1
+111  Squarepoint_BT_to_ARU            active    Eth1/41
+700  Virtu                            active    Eth1/47
+2010 BT-NEU-WNSW-P01                  active    Eth1/54
+2400 Coral_Reef                       active    Eth1/42

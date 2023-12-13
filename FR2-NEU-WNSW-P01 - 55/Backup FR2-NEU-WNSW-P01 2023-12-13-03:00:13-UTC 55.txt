@@ -1,0 +1,332 @@
+!Command: show running-config
+!No configuration change since last restart
+!Time: Wed Dec 13 03:00:12 2023
+
+version 10.1(2) Bios:version 07.69
+hostname FR2-NEU-WNSW-P01
+vdc FR2-NEU-WNSW-P01 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature bash-shell
+feature scp-server
+feature vrrp
+nv overlay evpn
+feature ospf
+feature bgp
+feature pim
+feature interface-vlan
+feature vn-segment-vlan-based
+feature lldp
+feature bfd
+clock protocol none vdc 1
+feature nv overlay
+feature ngoam
+
+no password strength-check
+username admin password 5 $5$uId29U0x$X3YT/pc33mtlzAi.Fatrpq0L.LrBM20mQlYWvMPpDID  role network-admin
+ip domain-lookup
+ip name-server 10.128.148.251
+ip name-server 10.128.148.251 use-vrf management
+radius-server host 10.128.148.251 key 7 "w4AtffjRJOd.H2*wedoip.sPM" authentication accounting
+aaa group server radius DALIO
+    server 10.128.148.251
+    use-vrf management
+    source-interface mgmt0
+ip access-list acl-cm-fr2-500mb-in
+  10 permit ip any any
+ip access-list acl-snmp-rw-in
+  statistics per-entry
+  10 remark Allow Observium
+  20 permit ip 10.128.148.5/32 any
+  30 permit ip 10.128.149.12/32 any
+ip access-list acl-vty-in
+  10 permit ip 172.16.138.0/24 any
+  20 permit ip 172.16.139.0/24 any
+  30 permit ip 10.245.0.0/30 any
+  40 permit ip 10.246.0.0/30 any
+  50 permit ip 10.247.0.0/30 any
+  60 permit ip 10.248.0.0/30 any
+  70 permit ip 10.249.0.0/24 any
+  80 permit ip 10.128.148.0/24 any
+  90 permit ip 10.128.149.0/24 any
+  100 permit ip 10.112.134.192/27 any
+  110 permit ip 10.112.135.192/27 any
+  120 permit ip 10.212.136.192/27 any
+class-map type qos match-all cm-fr2-500mb-in
+  match access-group name acl-cm-fr2-500mb-in
+policy-map type qos pm-pol-fr2-in
+  class cm-fr2-500mb-in
+    police cir 500000000 bps bc 250000 bytes conform transmit violate drop
+copp profile strict
+bfd multihop interval 250 min_rx 250 multiplier 1
+snmp-server source-interface traps loopback1
+snmp-server user admin network-admin auth md5 0xada4e9e97a05d00878b906826694bc2c priv des 0xada4e9e97a05d00878b906826694bc2c localizedkey
+snmp-server host 10.128.149.12 traps version 2c N3utRA1!ty
+rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+snmp-server community N3utRA1!ty group network-admin
+snmp-server community N3utRA1!ty use-ipv4acl acl-snmp-rw-in
+aaa authentication login default group DALIO local
+aaa authentication login console group DALIO local
+system jumbomtu 9000
+
+ip pim rp-address 9.9.9.254 group-list 224.0.0.0/4
+ip pim ssm range 232.0.0.0/8
+vlan 1,10,2010
+vlan 10
+  name Server_Universal_Access
+vlan 2010
+  name FR2-NEU-WNSW-P02
+
+no spanning-tree vlan 600
+ip prefix-list pl-ciena-mgmt seq 1 permit 10.124.55.152/29
+ip prefix-list pl-loopback-only seq 10 permit 0.0.0.0/0 eq 32
+route-map rm-ciena-mgmt-advertise permit 10
+  match ip address prefix-list pl-ciena-mgmt
+route-map rm-loopback-routes permit 10
+  match ip address prefix-list pl-loopback-only
+route-map rm-nexthop-unchanged permit 10
+  set ip next-hop unchanged
+vrf context management
+  ip route 0.0.0.0/0 10.4.51.1
+  ip route 0.0.0.0/0 10.128.148.129
+ngoam install acl
+ngoam xconnect hb-interval 5000
+
+
+interface Vlan1
+
+interface Vlan10
+  description NEU_SRV_UA
+  no shutdown
+  ip address 10.128.149.26/29
+  vrrp 1
+    priority 105
+    authentication text VL_10
+    address 10.128.149.25
+    no shutdown
+
+interface Vlan2010
+  description FR2-NEU-XC *** Et1/54 - FR2-NEU-WNSW-P02 Et1/54 - 100Gb ***
+  no shutdown
+  mtu 9000
+  ip address 172.16.139.1/30
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback100
+
+interface Ethernet1/1
+
+interface Ethernet1/2
+
+interface Ethernet1/3
+
+interface Ethernet1/4
+
+interface Ethernet1/5
+
+interface Ethernet1/6
+  description NEU-XC *** Et1/6 - FR2-NEU-SRV-01 10G1 - 10Gb ***
+  switchport
+  switchport access vlan 10
+  no shutdown
+
+interface Ethernet1/7
+
+interface Ethernet1/8
+
+interface Ethernet1/9
+
+interface Ethernet1/10
+
+interface Ethernet1/11
+  no shutdown
+
+interface Ethernet1/12
+  no shutdown
+
+interface Ethernet1/13
+
+interface Ethernet1/14
+
+interface Ethernet1/15
+
+interface Ethernet1/16
+
+interface Ethernet1/17
+
+interface Ethernet1/18
+
+interface Ethernet1/19
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+
+interface Ethernet1/22
+
+interface Ethernet1/23
+
+interface Ethernet1/24
+
+interface Ethernet1/25
+
+interface Ethernet1/26
+
+interface Ethernet1/27
+
+interface Ethernet1/28
+
+interface Ethernet1/29
+
+interface Ethernet1/30
+
+
+interface Ethernet1/31
+
+interface Ethernet1/32
+
+interface Ethernet1/33
+
+interface Ethernet1/34
+
+interface Ethernet1/35
+
+interface Ethernet1/36
+
+interface Ethernet1/37
+
+interface Ethernet1/38
+
+interface Ethernet1/39
+
+interface Ethernet1/40
+
+interface Ethernet1/41
+
+interface Ethernet1/42
+
+interface Ethernet1/43
+  no shutdown
+
+interface Ethernet1/44
+  no shutdown
+
+interface Ethernet1/45
+  no shutdown
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+  no shutdown
+
+interface Ethernet1/48
+  no shutdown
+
+interface Ethernet1/49
+
+interface Ethernet1/50
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+  description FR2-NEU-XC *** Et1/52 - NSID001281 - LHC-NEU-WNSW-P01 Et1/52 - 100Gb ***
+  mtu 9000
+  ip address 10.249.0.46/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/53
+
+interface Ethernet1/54
+  description NEU-XC *** Et1/54 - FR2-NEU-WNSW-P02 Et1/54 - 100Gb ***
+  switchport
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  no shutdown
+
+interface mgmt0
+  media-type rj45
+  vrf member management
+  ip address 10.128.148.130/29
+
+interface loopback1
+  description NEU-MGMT *** FR2 Lo1 Management ***
+  ip address 172.16.138.190/32
+  ip ospf network point-to-point
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface loopback100
+  description VTEP-IP
+  ip address 1.1.1.190/32
+  ip pim sparse-mode
+line console
+line vty
+  access-class acl-vty-in in
+boot nxos bootflash:/nxos.10.1.2.bin
+router ospf 10
+  router-id 172.16.138.190
+  network 172.16.0.190/32 area 0.0.0.0
+  network 172.16.139.0/30 area 0.0.0.0
+  log-adjacency-changes
+  max-lsa 12000
+  passive-interface default
+router bgp 65516
+  router-id 172.16.138.190
+  log-neighbor-changes
+  address-family ipv4 unicast
+    network 10.128.149.24/29
+    redistribute direct route-map rm-loopback-routes
+  address-family l2vpn evpn
+  neighbor 10.249.0.45
+    bfd
+    remote-as 65520
+    description eBGP to LHC-NEU-WNSW-P01
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+  neighbor 172.16.139.2
+    bfd
+    remote-as 65517
+    description eBGP to FR2-NEU-WNSW-P02
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+evpn
+
+logging server 10.128.148.5 6
+logging server 10.128.149.12 6
+logging source-interface loopback1
+
+
+
+show vlan brief
+
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+10   Server_Universal_Access          active    Eth1/6, Eth1/54
+2010 FR2-NEU-WNSW-P02                 active    Eth1/54

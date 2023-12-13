@@ -1,0 +1,694 @@
+!Command: show running-config
+!No configuration change since last restart
+!Time: Wed Dec 13 03:00:11 2023
+
+version 10.1(2) Bios:version 07.69
+hostname LD4-NEU-WNSW-P02
+vdc LD4-NEU-WNSW-P02 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature bash-shell
+feature scp-server
+feature vrrp
+feature scheduler
+nv overlay evpn
+feature ospf
+feature bgp
+feature pim
+feature interface-vlan
+feature vn-segment-vlan-based
+feature hsrp
+feature lldp
+feature bfd
+clock protocol none vdc 1
+feature nv overlay
+
+role name unimus
+  rule 1 permit command show version ; show running-config
+no password strength-check
+username admin password 5 $5$Rg9t2F9u$KtMnmL7u5nANq9u3TRtGUbRjoAkEnIv.Ypv8b/wwuv0  role network-admin
+ip domain-lookup
+ip name-server 10.128.148.251
+ip name-server 10.128.148.251 use-vrf management
+radius-server host 10.128.148.251 key 7 "w4AtffjRJOd.H2*wedoip.sPM" authentication accounting
+aaa group server radius DALIO
+    server 10.128.148.251
+    use-vrf management
+    source-interface mgmt0
+ip access-list acl-cm-ld4-500mb-in
+  10 permit ip any any
+ip access-list acl-snmp-rw-in
+  10 remark Allow Observium
+  20 permit ip 10.128.148.5/32 any
+  30 permit ip 10.128.149.12/32 any
+ip access-list acl-vty-in
+  10 permit ip 172.16.138.0/24 any
+  20 permit ip 172.16.139.0/24 any
+  30 permit ip 10.245.0.0/30 any
+  40 permit ip 10.246.0.0/30 any
+  50 permit ip 10.247.0.0/30 any
+  60 permit ip 10.248.0.0/30 any
+  70 permit ip 10.249.0.0/24 any
+  80 permit ip 10.128.148.0/24 any
+  90 permit ip 10.128.149.0/24 any
+  100 permit ip 10.112.134.192/27 any
+  110 permit ip 10.112.135.192/27 any
+  120 permit ip 10.212.136.192/27 any
+class-map type qos match-all cm-ld4-500mb-in
+  match access-group name acl-cm-ld4-500mb-in
+policy-map type qos pm-pol-ld4-in
+  class cm-ld4-500mb-in
+    police cir 500000000 bps bc 250000 bytes conform transmit violate drop
+copp profile strict
+bfd multihop interval 250 min_rx 250 multiplier 1
+snmp-server source-interface traps loopback1
+snmp-server user admin network-admin auth md5 0x0954b86f66e77b1ad7b3dd29ec02f55c priv des 0x0954b86f66e77b1ad7b3dd29ec02f55c localizedkey
+snmp-server host 10.128.148.5 traps version 2c N3utRA1!ty
+snmp-server host 10.128.149.12 traps version 2c N3utRA1!ty
+rmon event 1 description FATAL(1) owner PMON@FATAL
+rmon event 2 description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 description ERROR(3) owner PMON@ERROR
+rmon event 4 description WARNING(4) owner PMON@WARNING
+rmon event 5 description INFORMATION(5) owner PMON@INFO
+snmp-server enable traps callhome event-notify
+snmp-server enable traps callhome smtp-send-fail
+snmp-server enable traps cfs state-change-notif
+snmp-server enable traps lldp lldpRemTablesChange
+snmp-server enable traps cfs merge-failure
+snmp-server enable traps aaa server-state-change
+snmp-server enable traps hsrp state-change
+snmp-server enable traps feature-control FeatureOpStatusChange
+snmp-server enable traps sysmgr cseFailSwCoreNotifyExtended
+snmp-server enable traps config ccmCLIRunningConfigChanged
+snmp-server enable traps snmp authentication
+snmp-server enable traps link cisco-xcvr-mon-status-chg
+snmp-server enable traps vtp notifs
+snmp-server enable traps vtp vlancreate
+snmp-server enable traps vtp vlandelete
+snmp-server enable traps bridge newroot
+snmp-server enable traps bridge topologychange
+snmp-server enable traps stpx inconsistency
+snmp-server enable traps stpx root-inconsistency
+snmp-server enable traps stpx loop-inconsistency
+snmp-server enable traps system Clock-change-notification
+snmp-server enable traps feature-control ciscoFeatOpStatusChange
+snmp-server enable traps mmode cseNormalModeChangeNotify
+snmp-server enable traps mmode cseMaintModeChangeNotify
+snmp-server community N3utRA1!ty group network-admin
+snmp-server community N3utRA1!ty use-ipv4acl acl-snmp-rw-in
+aaa authentication login default group DALIO local
+aaa authentication login console group DALIO local
+system jumbomtu 9000
+
+ip route 0.0.0.0/0 10.248.0.1 100
+ip pim rp-address 9.9.9.254 group-list 224.0.0.0/4
+ip pim ssm range 232.0.0.0/8
+ip pim anycast-rp 9.9.9.254 172.16.138.185
+ip pim anycast-rp 9.9.9.254 172.16.138.202
+ip pim anycast-rp 9.9.9.254 172.16.138.210
+vlan 1,10,117,300,500,900,1000,1200,1400,1700,2000,2010,2200,3012
+vlan 10
+  name Server_Universal_Access
+vlan 117
+  name AllOptions_LD4_to_NY4
+  vn-segment 30117
+  xconnect
+vlan 300
+  name ORA
+  vn-segment 30300
+  xconnect
+vlan 500
+  name Millennium
+  vn-segment 30500
+  xconnect
+vlan 900
+  name Xenfin
+  vn-segment 30900
+  xconnect
+vlan 1000
+  name DaVinci
+  vn-segment 301000
+  xconnect
+vlan 1200
+  name Credit_Agricole_LD4_to_NY4
+  vn-segment 301200
+  xconnect
+vlan 1400
+  name SocGen_LD4_to_NY4
+  vn-segment 301400
+  xconnect
+vlan 1700
+  name All_Derivatives
+  vn-segment 301700
+  xconnect
+vlan 2000
+  name SSW
+  vn-segment 302000
+  xconnect
+vlan 2010
+  name Neutrality_www
+vlan 2200
+  name Options_LD4_to_TY3
+  vn-segment 302200
+  xconnect
+
+no spanning-tree vlan 117,300,500,1200,1700,2000,2200
+ip prefix-list pl-all-routes seq 1 permit 0.0.0.0/0 eq 32
+ip prefix-list pl-all-routes seq 2 permit 10.128.149.8/29
+ip prefix-list pl-bgp-neu-ld4-itfw-receive seq 1 permit 10.112.135.192/27
+ip prefix-list pl-ld4-aru-preferred seq 1 permit 172.16.138.198/32
+ip prefix-list pl-ld4-aru-preferred seq 2 permit 1.1.1.198/32
+ip prefix-list pl-ld4-aru-preferred seq 3 permit 172.16.138.188/32
+ip prefix-list pl-ld4-aru-preferred seq 4 permit 1.1.1.188/32
+ip prefix-list pl-ld4-aru-preferred seq 5 permit 9.9.9.254/32
+ip prefix-list pl-ld4-ty3-preferred seq 1 permit 172.16.138.185/32
+ip prefix-list pl-ld4-ty3-preferred seq 2 permit 1.1.1.185/32
+ip prefix-list pl-loopback-only seq 10 permit 0.0.0.0/0 eq 32
+route-map rm-bgp-neu-ld4-itfw-sec-receive permit 10
+  match ip address prefix-list pl-bgp-neu-ld4-itfw-receive
+route-map rm-ld4-aru-preferred permit 10
+  match ip address prefix-list pl-ld4-aru-preferred
+  set local-preference 500
+route-map rm-ld4-aru-preferred permit 20
+  match ip address prefix-list pl-all-routes
+route-map rm-ld4-ty3-preferred permit 10
+  match ip address prefix-list pl-ld4-ty3-preferred
+route-map rm-loopback-routes permit 10
+  match ip address prefix-list pl-loopback-only
+route-map rm-nexthop-unchanged permit 10
+  set ip next-hop unchanged
+vrf context management
+  ip route 0.0.0.0/0 10.128.148.65
+
+
+interface Vlan1
+
+interface Vlan10
+  description NEU_SRV_UA
+  no shutdown
+  ip address 10.128.148.3/29
+  vrrp 1
+    authentication text VL_10
+    address 10.128.148.1
+    no shutdown
+
+interface Vlan2010
+  description LD4-NEU-XC *** Et1/49 - LD4-NEU-WNSW-P01 Et1/49 - 10Gb ***
+  no shutdown
+  mtu 9000
+  ip address 172.16.139.102/30
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface Vlan3012
+  description NEU-VL-3010 *** LD4-NEU-WNSW-P01 Et1/5 to LD4-NEU-ITFW-P01 port3 ***
+  no shutdown
+  ip address 10.248.0.2/30
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback100
+  member vni 30117
+    mcast-group 239.1.1.8
+  member vni 30300
+    mcast-group 239.1.1.30
+  member vni 30500
+    mcast-group 239.1.1.50
+  member vni 30900
+    mcast-group 239.1.1.90
+  member vni 301000
+    mcast-group 239.1.1.100
+  member vni 301200
+    mcast-group 239.1.1.120
+  member vni 301400
+    mcast-group 239.1.1.140
+  member vni 301700
+    mcast-group 239.1.1.170
+  member vni 302000
+    mcast-group 239.1.1.200
+  member vni 302200
+    mcast-group 239.1.1.220
+
+interface Ethernet1/1
+
+interface Ethernet1/2
+
+interface Ethernet1/3
+
+interface Ethernet1/4
+  description LD4-NEU-XC *** Et1/4 - TY3-NEU-WNSW-P02 Et1/4 - NSID001720 - 10Gb ***
+  mtu 9000
+  ip address 10.249.0.109/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/5
+  description NEU-VL-3012 *** LD4-NEU-WNSW-P01 Et1/5 to LD4-NEU-ITFW-P01 port3 ***
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 3012
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/6
+
+interface Ethernet1/7
+
+interface Ethernet1/8
+
+interface Ethernet1/9
+  no shutdown
+
+interface Ethernet1/10
+  description NEU-XC *** Et1/10 - NY4-NEU-WNSW-P02 Et1/10 - 10Gb ***
+  mtu 9000
+  ip address 10.249.0.29/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/11
+  description LD4-CLI-XC *** Et1/11 - NSID001311 - ORA - 10Gb ***
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 300
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/12
+
+interface Ethernet1/13
+
+interface Ethernet1/14
+
+interface Ethernet1/15
+  description NEU-XC *** Et1/15 - LD4-NEU-SRV-01 10G2 - 10Gb ***
+  switchport
+  switchport access vlan 10
+  no shutdown
+
+interface Ethernet1/16
+
+interface Ethernet1/17
+
+interface Ethernet1/18
+
+interface Ethernet1/19
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+
+interface Ethernet1/22
+
+interface Ethernet1/23
+
+interface Ethernet1/24
+
+interface Ethernet1/25
+
+interface Ethernet1/26
+
+interface Ethernet1/27
+
+interface Ethernet1/28
+
+interface Ethernet1/29
+
+interface Ethernet1/30
+
+interface Ethernet1/31
+  description LD4 to CC2 Test - LD4-NEU-ADVA-P01 port10
+  no shutdown
+
+interface Ethernet1/32
+
+interface Ethernet1/33
+
+interface Ethernet1/34
+
+interface Ethernet1/35
+
+interface Ethernet1/36
+
+interface Ethernet1/37
+
+interface Ethernet1/38
+
+interface Ethernet1/39
+  description LD4-NEU-XC *** Et1/39 - NSID001032 - Options - 2G ***
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 2200
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/40
+  description LD4-CLi-XC *** Et1/40 - NSID001526 - SocGen - 10Gb ***
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 1400
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/41
+  description LD4-NEU-XC *** Et1/41 - NSID001509 - AllOptions *** - 1G
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 117
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/42
+
+interface Ethernet1/43
+  description LD4-CLI-XC *** Et1/43 - NSID001306 - Credit Agricole - 10Gb ***
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 1200
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/44
+  description LD4-CLI-XC *** Et1/44 - NSID001343 - SSW - 10Gb ***
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 2000
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/45
+  description LD4-CLI-XC *** Et1/45 - NSID001330 - All Derivatives - 10Gb
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 1700
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/46
+  description LD4-CLI-XC *** Et1/46 - NSID001238 - Xenfin *** - 1G
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 900
+  spanning-tree bpdufilter enable
+  mtu 9000
+  speed 1000
+  duplex full
+  no shutdown
+
+interface Ethernet1/47
+  description LD4-CLI-XC *** Et1/47 - NSID001233 - Millennium - 10G ***
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 500
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/48
+  description LD4-CLI-XC *** Et1/48 - NSID001313 - DaVinci *** - 1G
+  no lldp transmit
+  no lldp receive
+  switchport
+  switchport mode dot1q-tunnel
+  switchport access vlan 1000
+  spanning-tree bpdufilter enable
+  mtu 9000
+  no shutdown
+
+interface Ethernet1/49
+  description NEU-XC *** Et1/49 - LD4-NEU-WNSW-P01 Et1/49 - 100Gb ***
+  switchport
+  switchport mode trunk
+  switchport trunk native vlan 2010
+  switchport trunk allowed vlan 10,2010
+  mtu 9000
+  speed 100000
+  no negotiate auto
+  no shutdown
+
+interface Ethernet1/50
+  description LD4-NEU-XC *** Et1/50 - MIL2-NEU-WNSW-P01 Et1/52 - 100Gb ***
+  mtu 9000
+  speed 100000
+  no negotiate auto
+  ip address 10.249.0.37/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+  ip pim sparse-mode
+
+interface Ethernet1/53
+  description LD4-NEU-XC *** Et1/53 - NSID001287 - LHC-NEU-WNSW-P02 Et1/53 - 100Gb
+  mtu 9000
+  ip address 10.249.0.50/30
+  ip pim sparse-mode
+  no shutdown
+
+interface Ethernet1/54
+
+interface mgmt0
+  vrf member management
+  ip address 10.128.148.67/29
+
+interface loopback1
+  description NEU-MGMT *** LD4 Lo1 Management ***
+  ip address 172.16.138.185/32
+  ip ospf network point-to-point
+  ip router ospf 10 area 0.0.0.0
+  ip pim sparse-mode
+
+interface loopback100
+  description VTEP-IP
+  ip address 1.1.1.185/32
+  ip pim sparse-mode
+
+interface loopback254
+  description PIM-RP
+  ip address 9.9.9.254/32
+  ip pim sparse-mode
+line console
+line vty
+  access-class acl-vty-in in
+boot nxos bootflash:/nxos.10.1.2.bin
+router ospf 10
+  router-id 172.16.138.185
+  network 172.16.0.185/32 area 0.0.0.0
+  network 172.16.139.100/30 area 0.0.0.0
+  log-adjacency-changes
+  max-lsa 12000
+  passive-interface default
+router bgp 65511
+  router-id 172.16.138.185
+  log-neighbor-changes
+  address-family ipv4 unicast
+    network 10.128.148.0/29
+    network 10.248.0.0/30
+    redistribute direct route-map rm-loopback-routes
+  address-family l2vpn evpn
+  neighbor 10.248.0.1
+    bfd
+    remote-as 65532
+    description eBGP to LD4-NEU-ITFW-P01
+    timers 6 20
+    address-family ipv4 unicast
+      route-map rm-bgp-neu-ld4-itfw-sec-receive in
+      soft-reconfiguration inbound always
+  neighbor 10.249.0.30
+    remote-as 65515
+    description eBGP to NY4-NEU-WNSW-P02
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+  neighbor 10.249.0.38
+    bfd
+    remote-as 65528
+    description eBGP to MIL2-NEU-WNSW-P01
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+  neighbor 10.249.0.49
+    bfd
+    remote-as 65521
+    description eBGP to LHC-NEU-WNSW-P02
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      route-map rm-ld4-aru-preferred in
+      soft-reconfiguration inbound always
+  neighbor 10.249.0.110
+    remote-as 65513
+    description eBGP to TY3-NEU-WNSW-P02
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      route-map rm-ld4-ty3-preferred out
+      soft-reconfiguration inbound always
+  neighbor 172.16.138.187
+    remote-as 65513
+    description EVPN to TY3-NEU-WNSW-P02
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.138.188
+    bfd
+    remote-as 65514
+    description EVPN to NY4-NEU-WNSW-P01
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.138.189
+    remote-as 65515
+    description EVPN to NY4-NEU-WNSW-P02
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.138.197
+    bfd
+    remote-as 65523
+    description EVPN to THN-NEU-WNSW-P02
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.138.199
+    bfd
+    remote-as 65525
+    description EVPN to ARU-NEU-WNSW-P02
+    update-source loopback1
+    ebgp-multihop 100
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map rm-nexthop-unchanged out
+  neighbor 172.16.139.101
+    bfd
+    remote-as 65510
+    description eBGP to LD4-NEU-WNSW-P01
+    timers 6 20
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+      soft-reconfiguration inbound always
+evpn
+  vni 30117 l2
+    rd 30117:65511
+    route-target import 30117:117
+    route-target export 30117:117
+  vni 30300 l2
+    rd 30300:65511
+    route-target import 30300:300
+    route-target export 30300:300
+  vni 30500 l2
+    rd 30500:65511
+    route-target import 30500:500
+    route-target export 30500:500
+  vni 30900 l2
+    rd 30900:65511
+    route-target import 30900:900
+    route-target export 30900:900
+  vni 301000 l2
+    rd 301000:65511
+    route-target import 301000:1000
+    route-target export 301000:1000
+  vni 301200 l2
+    rd 301200:65511
+    route-target import 301200:1200
+    route-target export 301200:1200
+  vni 301400 l2
+    rd 301400:65511
+    route-target import 301400:1400
+    route-target export 301400:1400
+  vni 301500 l2
+    rd 301500:65511
+    route-target import 301500:1500
+    route-target export 301500:1500
+  vni 301700 l2
+    rd 301700:65511
+    route-target import 301700:1700
+    route-target export 301700:1700
+  vni 302000 l2
+    rd 302000:65511
+    route-target import 302000:2000
+    route-target export 302000:2000
+  vni 302200 l2
+    rd 302200:65511
+    route-target import 302200:2200
+    route-target export 302200:2200
+event manager applet LD4_MIL2_ARU_Down
+  event syslog occurs 1 pattern "%BFD-5-SESSION_REMOVED: BFD session to neighbor 172.16.138.199"
+  action 1.0 cli conf t
+  action 2.0 cli interface ethernet1/11
+  action 3.0 cli shutdown
+  action 4.0 cli interface ethernet1/45
+  action 5.0 cli shutdown
+
+logging server 10.128.148.5 6
+logging server 10.128.149.12 6
+logging source-interface loopback1
+
+
+
+
+show vlan brief
+
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+10   Server_Universal_Access          active    Eth1/15, Eth1/49
+117  AllOptions_LD4_to_NY4            active    Eth1/41
+300  ORA                              active    Eth1/11
+500  Millennium                       active    Eth1/47
+900  Xenfin                           active    Eth1/46
+1000 DaVinci                          active    Eth1/48
+1200 Credit_Agricole_LD4_to_NY4       active    Eth1/43
+1400 SocGen_LD4_to_NY4                active    Eth1/40
+1700 All_Derivatives                  active    Eth1/45
+2000 SSW                              active    Eth1/44
+2010 Neutrality_www                   active    Eth1/49
+2200 Options_LD4_to_TY3               active    Eth1/39
+3012 VLAN3012                         active    Eth1/5
